@@ -1,0 +1,5 @@
+#ignore the dependencies directory
+dependencies/
+
+#don't ignore the .gitignore
+!.gitignore
