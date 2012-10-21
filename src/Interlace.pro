@@ -6,6 +6,7 @@ TEMPLATE = app
 TARGET = Interlace
 DEPENDPATH += .
 INCLUDEPATH += . /usr/local/include
+LIBS += /usr/local/lib -lexiv2
 
 DESTDIR = ../bin
 
