@@ -3,9 +3,11 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = 
+TARGET = Interlace
 DEPENDPATH += .
-INCLUDEPATH += .
+INCLUDEPATH += . /usr/local/include
+
+DESTDIR = ../bin
 
 # Input
 HEADERS += Interlace.h

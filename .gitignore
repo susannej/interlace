@@ -1,5 +1,7 @@
 #ignore the dependencies directory
 dependencies/
+bin/
+src/Makefile
 
 #don't ignore the .gitignore
 !.gitignore
