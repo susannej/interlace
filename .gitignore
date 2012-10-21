@@ -2,6 +2,8 @@
 dependencies/
 bin/
 src/Makefile
+moc_*
+*.o
 
 #don't ignore the .gitignore
 !.gitignore

@@ -1,5 +1,7 @@
 #include <QtGui>
 
+#include "MainView.h"
+
 class Interlace : public QMainWindow
 {
 	Q_OBJECT
@@ -7,14 +9,16 @@ class Interlace : public QMainWindow
 	public:
 		Interlace();
 
-	//private slots:
+	private slots:
 	//	void quit();
+		void preferences();
 
 	private:
-		QWidget *dirtree;
-		QWidget *browser;
+		MainView *mainview;
 
 		QAction *exitAction;
+		QAction *preferencesAction;
 
 		QMenu *fileMenu;
+		QMenu *editMenu;
 };

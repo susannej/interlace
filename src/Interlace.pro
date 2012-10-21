@@ -6,10 +6,17 @@ TEMPLATE = app
 TARGET = Interlace
 DEPENDPATH += .
 INCLUDEPATH += . /usr/local/include
-LIBS += /usr/local/lib -lexiv2
+LIBS += -L/usr/local/lib -lexiv2
 
 DESTDIR = ../bin
 
 # Input
-HEADERS += Interlace.h
-SOURCES += Interlace.cpp
+HEADERS += Interlace.h \
+	MainView.h \
+	SourceTabView.h \
+	ImageBrowserView.h
+
+SOURCES += Interlace.cpp \
+	MainView.cpp \
+	SourceTabView.cpp \
+	ImageBrowserView.cpp

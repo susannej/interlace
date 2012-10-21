@@ -9,23 +9,25 @@ int main(int argc, char **argv) {
 	return app.exec();
 }
 
-Interlace::Interlace()
-{
+Interlace::Interlace() {
 	exitAction = new QAction(tr("E&xit"), this);
+	preferencesAction = new QAction(tr("Preferences..."), this);
 
 	connect(exitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+	connect(preferencesAction, SIGNAL(triggered()), this, SLOT(preferences()));
 
 	fileMenu = menuBar()->addMenu(tr("&File"));
 	fileMenu->addAction(exitAction);
 
-	dirtree = new QWidget;
-	browser = new QWidget;
+	editMenu = menuBar()->addMenu(tr("&Edit"));
+	editMenu->addAction(preferencesAction);
 
-	QHBoxLayout *layout = new QHBoxLayout;
-	layout->addWidget(dirtree);
-	layout->addWidget(browser);
-
-	setLayout(layout);
+	mainview = new MainView(this);
+	this->setCentralWidget(mainview);
 
 	setWindowTitle(tr("Interlace"));
+}
+
+void Interlace::preferences() {
+	printf("preferences Action\n");
 }
