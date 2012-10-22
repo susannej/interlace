@@ -10,6 +10,11 @@ LIBS += -L/usr/local/lib -lexiv2
 
 DESTDIR = ../bin
 
+OBJECTS_DIR = ../build/obj
+MOC_DIR = ../build/moc
+RCC_DIR = ../build/rcc
+UI_DIR = ../build/ui
+
 # Input
 HEADERS += Interlace.h \
 	MainView.h \
