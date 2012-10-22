@@ -7,12 +7,20 @@ class SourceTabView : public QTabWidget
 	public:
 		SourceTabView(QWidget *parent);
 
-	//private slots:
-	//	void quit();
+	private slots:
+		void dirtreeItemActivated(const QModelIndex &);
 	//	void preferences();
 
 	private:
 		QWidget *parent;
-		QWidget *dirtree;
+
+		QFileSystemModel *dirmodel;
+		QTreeView *dirtree;
+
 		QWidget *databasetree;
+
+	/*
+	 * QTreeView hat ein Signal void activated(const QModelIndex & index)
+	 */
+
 };
