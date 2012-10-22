@@ -2,7 +2,8 @@
 dependencies/
 bin/
 build/
-src/Makefile
+src/Makefile*
+src/vc100.pdb
 moc_*
 *.o
 
