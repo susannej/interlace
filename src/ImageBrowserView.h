@@ -1,3 +1,7 @@
+#ifndef IMAGEBROWSERVIEW_H
+
+#define IMAGEBROWSERVIEW_H 1
+
 #include <QtGui>
 
 class ImageBrowserView : public QWidget
@@ -6,6 +10,8 @@ class ImageBrowserView : public QWidget
 
 	public:
 		ImageBrowserView(QWidget *parent);
+		
+		void dirSelected(QString directoryName);
 
 	//private slots:
 	//	void quit();
@@ -14,3 +20,5 @@ class ImageBrowserView : public QWidget
 	private:
 		QWidget *parent;
 };
+
+#endif

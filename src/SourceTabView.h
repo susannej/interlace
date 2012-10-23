@@ -1,18 +1,24 @@
+#ifndef SOURCETABVIEW_H
+
+#define SOURCETABVIEW_H 1
+
 #include <QtGui>
+
+#include "MainView.h"
 
 class SourceTabView : public QTabWidget
 {
 	Q_OBJECT
 
 	public:
-		SourceTabView(QWidget *parent);
+		SourceTabView(MainView *parent);
 
 	private slots:
-		void dirtreeItemActivated(const QModelIndex &);
+		void dirtreeItemClicked(const QModelIndex &);
 	//	void preferences();
 
 	private:
-		QWidget *parent;
+		MainView *parent;
 
 		QFileSystemModel *dirmodel;
 		QTreeView *dirtree;
@@ -24,3 +30,5 @@ class SourceTabView : public QTabWidget
 	 */
 
 };
+
+#endif

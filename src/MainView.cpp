@@ -10,3 +10,6 @@ MainView::MainView(QWidget *parent) {
 	addWidget(browser);
 }
 
+void MainView::dirSelected(QString directoryName) {
+	browser->dirSelected(directoryName);
+}

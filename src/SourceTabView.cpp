@@ -1,6 +1,6 @@
 #include "SourceTabView.h"
 
-SourceTabView::SourceTabView(QWidget *parent) {
+SourceTabView::SourceTabView(MainView *parent) {
 	this->parent = parent;
 
 	dirmodel = new QFileSystemModel;
@@ -18,7 +18,7 @@ SourceTabView::SourceTabView(QWidget *parent) {
 	dirtree->hideColumn(3);
 	dirtree->sortByColumn(0, Qt::AscendingOrder);
 
-	connect(dirtree, SIGNAL(clicked(const QModelIndex &)), this, SLOT(dirtreeItemActivated(const QModelIndex &)));
+	connect(dirtree, SIGNAL(clicked(const QModelIndex &)), this, SLOT(dirtreeItemClicked(const QModelIndex &)));
 
 	databasetree = new QWidget;
 
@@ -30,10 +30,17 @@ SourceTabView::SourceTabView(QWidget *parent) {
 	 */
 }
 
-void SourceTabView::dirtreeItemActivated(const QModelIndex &index) {
+void SourceTabView::dirtreeItemClicked(const QModelIndex &index) {
+	//parent->dirSelected(dirmodel->fileName(index);
 	QString qstring = dirmodel->fileName(index);
 	QByteArray barray = qstring.toAscii();
 	char* s = barray.data();
 //	(((QString) (dirmodel->fileName(index))->toAscii())->data();
 	printf("dirtree activated %s\n", s);
+
+		QString qstring2 = dirmodel->filePath(index);
+	QByteArray barray2 = qstring2.toAscii();
+	char* s2 = barray2.data();
+//	(((QString) (dirmodel->fileName(index))->toAscii())->data();
+	printf("dirtree activated %s\n", s2);
 }

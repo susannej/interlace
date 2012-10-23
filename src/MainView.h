@@ -1,3 +1,7 @@
+#ifndef MAINVIEW_H
+
+#define MAINVIEW_H 1
+
 #include <QtGui>
 
 #include "SourceTabView.h"
@@ -9,6 +13,7 @@ class MainView : public QSplitter
 
 	public:
 		MainView(QWidget *parent);
+		void dirSelected(QString directoryName);
 
 	//private slots:
 	//	void quit();
@@ -19,3 +24,5 @@ class MainView : public QSplitter
 		SourceTabView *tabview;
 		ImageBrowserView *browser;
 };
+
+#endif

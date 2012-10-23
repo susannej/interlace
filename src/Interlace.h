@@ -1,3 +1,7 @@
+#ifndef INTERLACE_H
+
+#define INTERLACE_H 1
+
 #include <QtGui>
 
 #include "MainView.h"
@@ -22,3 +26,5 @@ class Interlace : public QMainWindow
 		QMenu *fileMenu;
 		QMenu *editMenu;
 };
+
+#endif
