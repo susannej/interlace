@@ -1,9 +1,13 @@
 #include "ImageBrowserModel.h"
 
-ImageBrowserModel::ImageBrowserModel() {
-	//this->parent = parent;
+#include "ImageBrowserView.h"
+
+ImageBrowserModel::ImageBrowserModel(ImageBrowserView *view) {
+	this->view = view;
 }
 
-void ImageBroserModel::dirSelected(QString directoryName) {
-
+void ImageBrowserModel::dirSelected(QString directoryName) {
+	QByteArray barray = directoryName.toAscii();
+	char* s = barray.data();
+	printf("dirtree activated %s\n", s);
 }

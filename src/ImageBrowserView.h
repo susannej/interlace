@@ -1,8 +1,10 @@
 #ifndef IMAGEBROWSERVIEW_H
 
-#define IMAGEBROWSERVIEW_H 1
+#define IMAGEBROWSERVIEW_H
 
 #include <QtGui>
+
+class ImageBrowserModel;
 
 class ImageBrowserView : public QWidget
 {
@@ -19,6 +21,7 @@ class ImageBrowserView : public QWidget
 
 	private:
 		QWidget *parent;
+		ImageBrowserModel *model;
 };
 
 #endif

@@ -1,10 +1,10 @@
 #ifndef INTERLACE_H
 
-#define INTERLACE_H 1
+#define INTERLACE_H
 
 #include <QtGui>
 
-#include "MainView.h"
+class MainView;
 
 class Interlace : public QMainWindow
 {

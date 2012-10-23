@@ -1,20 +1,22 @@
 #ifndef IMAGEBROWSERMODEL_H
 
-#define IMAGEBROWSERMODEL_H 1
+#define IMAGEBROWSERMODEL_H
 
 #include <QtGui>
 
-class ImageBrowserModel : public
+class ImageBrowserView;
+
+class ImageBrowserModel
 {
 	//Q_OBJECT
 
 	public:
-		ImageBrowserModel();
+		ImageBrowserModel(ImageBrowserView *view);
 		
 		void dirSelected(QString directoryName);
 
-	//private:
-	//	QWidget *parent;
+	private:
+		ImageBrowserView *view;
 };
 
 #endif

@@ -1,5 +1,8 @@
 #include "MainView.h"
 
+#include "SourceTabView.h"
+#include "ImageBrowserView.h"
+
 MainView::MainView(QWidget *parent) {
 	this->parent = parent;
 

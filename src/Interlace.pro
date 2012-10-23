@@ -4,6 +4,7 @@
 
 TEMPLATE = app
 TARGET = Interlace
+RESOURCES = Interlace.qrc
 DEPENDPATH += .
 INCLUDEPATH += . /usr/local/include
 

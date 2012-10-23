@@ -1,11 +1,11 @@
 #ifndef MAINVIEW_H
 
-#define MAINVIEW_H 1
+#define MAINVIEW_H
 
 #include <QtGui>
 
-#include "SourceTabView.h"
-#include "ImageBrowserView.h"
+class SourceTabView;
+class ImageBrowserView;
 
 class MainView : public QSplitter
 {

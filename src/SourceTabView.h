@@ -1,10 +1,10 @@
 #ifndef SOURCETABVIEW_H
 
-#define SOURCETABVIEW_H 1
+#define SOURCETABVIEW_H
 
 #include <QtGui>
 
-#include "MainView.h"
+class MainView;
 
 class SourceTabView : public QTabWidget
 {
@@ -14,8 +14,7 @@ class SourceTabView : public QTabWidget
 		SourceTabView(MainView *parent);
 
 	private slots:
-		void dirtreeItemClicked(const QModelIndex &);
-	//	void preferences();
+		void dirtreeItemClicked(const QModelIndex &index);
 
 	private:
 		MainView *parent;
@@ -24,10 +23,6 @@ class SourceTabView : public QTabWidget
 		QTreeView *dirtree;
 
 		QWidget *databasetree;
-
-	/*
-	 * QTreeView hat ein Signal void activated(const QModelIndex & index)
-	 */
 
 };
 
