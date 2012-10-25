@@ -27,11 +27,13 @@ UI_DIR = ../build/ui
 HEADERS += Interlace.h \
 	MainView.h \
 	SourceTabView.h \
+	ImageBrowserScrollArea.h \
 	ImageBrowserView.h \
 	ImageBrowserModel.h
 
 SOURCES += Interlace.cpp \
 	MainView.cpp \
 	SourceTabView.cpp \
+	ImageBrowserScrollArea.cpp \
 	ImageBrowserView.cpp \
 	ImageBrowserModel.cpp

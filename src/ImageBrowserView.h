@@ -11,17 +11,20 @@ class ImageBrowserView : public QWidget
 	Q_OBJECT
 
 	public:
-		ImageBrowserView(QWidget *parent);
+		ImageBrowserView();
 		
 		void dirSelected(QString directoryName);
-
-	//private slots:
-	//	void quit();
-	//	void preferences();
+		void removeWidgets();
+		void cleanupWidgets();
+		void createWidgets();
+		void updateView();
+		QWidget* createImage();
 
 	private:
-		QWidget *parent;
 		ImageBrowserModel *model;
+		int rows, columns;
+		QGridLayout *gridLayout;
+		QVector<QWidget*> vector;
 };
 
 #endif

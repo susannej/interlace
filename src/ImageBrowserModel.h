@@ -14,9 +14,15 @@ class ImageBrowserModel
 		ImageBrowserModel(ImageBrowserView *view);
 		
 		void dirSelected(QString directoryName);
+		int readdir();
+		int getNoOfFiles();
+		QString getFileName(int i);
 
 	private:
 		ImageBrowserView *view;
+
+		QDir *currentDirectory;
+		QStringList files;
 };
 
 #endif

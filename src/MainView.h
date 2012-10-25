@@ -5,6 +5,7 @@
 #include <QtGui>
 
 class SourceTabView;
+class ImageBrowserScrollArea;
 class ImageBrowserView;
 
 class MainView : public QSplitter
@@ -15,13 +16,10 @@ class MainView : public QSplitter
 		MainView(QWidget *parent);
 		void dirSelected(QString directoryName);
 
-	//private slots:
-	//	void quit();
-	//	void preferences();
-
 	private:
 		QWidget *parent;
 		SourceTabView *tabview;
+		ImageBrowserScrollArea *scrollArea;
 		ImageBrowserView *browser;
 };
 

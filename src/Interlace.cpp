@@ -10,6 +10,7 @@ int main(int argc, char **argv) {
 
 	Interlace interlace;
 	interlace.setStyleSheet(DARK_STYLESHEET);
+	interlace.resize(800, 600);
 	interlace.show();
 
 	return app.exec();
