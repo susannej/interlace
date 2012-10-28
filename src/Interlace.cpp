@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
 
 	Interlace interlace;
 	interlace.setStyleSheet(DARK_STYLESHEET);
-	interlace.resize(800, 600);
+	interlace.resize(1000, 800);
 	interlace.show();
 
 	return app.exec();
@@ -31,6 +31,11 @@ Interlace::Interlace() {
 
 	mainview = new MainView(this);
 	this->setCentralWidget(mainview);
+
+	QList<int> sizes = QList<int>();
+	sizes.append(300);
+	sizes.append(700);
+	mainview->setSizes(sizes);
 
 	setWindowTitle(tr("Interlace"));
 }

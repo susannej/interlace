@@ -14,17 +14,19 @@ class ImageBrowserView : public QWidget
 		ImageBrowserView();
 		
 		void dirSelected(QString directoryName);
+		void resizeUpdate();
 		void removeWidgets();
 		void cleanupWidgets();
 		void createWidgets();
-		void updateView();
-		QWidget* createImage();
+		QWidget* createImage(int i);
 
 	private:
 		ImageBrowserModel *model;
 		int rows, columns;
 		QGridLayout *gridLayout;
 		QVector<QWidget*> vector;
+
+		void updateView();
 };
 
 #endif

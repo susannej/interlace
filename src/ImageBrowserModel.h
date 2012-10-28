@@ -17,12 +17,15 @@ class ImageBrowserModel
 		int readdir();
 		int getNoOfFiles();
 		QString getFileName(int i);
+		QImage getImage(int i, int maxsize);
 
 	private:
 		ImageBrowserView *view;
 
-		QDir *currentDirectory;
-		QStringList files;
+		QDir currentDirectory;
+		QDir photoNinjaDirectory;
+		QFileInfoList files;
+		bool photoNinjaExists;
 };
 
 #endif

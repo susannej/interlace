@@ -8,7 +8,7 @@ MainView::MainView(QWidget *parent) {
 	this->parent = parent;
 
 	tabview = new SourceTabView(this);
-	ImageBrowserScrollArea *scrollArea = new ImageBrowserScrollArea; //(this);
+	ImageBrowserScrollArea *scrollArea = new ImageBrowserScrollArea;
 	scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 	browser = new ImageBrowserView();
 	scrollArea->setWidget(browser);

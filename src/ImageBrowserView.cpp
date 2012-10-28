@@ -5,7 +5,6 @@
 #define DIA_SIZE 200
 
 ImageBrowserView::ImageBrowserView() {
-
 	rows = 0;
 	columns = 0;
 
@@ -16,33 +15,30 @@ ImageBrowserView::ImageBrowserView() {
 }
 
 void ImageBrowserView::dirSelected(QString directoryName) {
-printf("dirSelected \n");
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	removeWidgets();
 	cleanupWidgets();
-printf("VectorSize = %d\n", vector.size());
 	model->dirSelected(directoryName);
 	createWidgets();
-printf("VectorSize = %d\n", vector.size());
 	updateView();
-		
+	QApplication::restoreOverrideCursor();
+}
+
+void ImageBrowserView::resizeUpdate() {
+	removeWidgets();
+	updateView();
 }
 
 void ImageBrowserView::removeWidgets() {
-printf("removeWidgetsIn \n");
-
 	for (int i = 0; i < vector.size(); i++) {
 		gridLayout->removeWidget(vector[i]);
 	}
-
-printf("removeWidgetsOut \n");
 }
 
 void ImageBrowserView::cleanupWidgets() {
-printf("cleanupWidgets \n");
 	int count = vector.size();
 	for (int i = 0; i < count; i++) {
 		int last = vector.size() -1;
-printf("lösche %d aus vector\n", last);
 		delete vector[last];
 		vector.remove(last);
 	}
@@ -50,25 +46,16 @@ printf("lösche %d aus vector\n", last);
 }
 
 void ImageBrowserView::createWidgets() {
-printf("createWidgets \n");
-printf("Vectorsize = %d\n", vector.size());
 	for(int i = 0; i < model->getNoOfFiles(); i++) {
-		QWidget *w = createImage();
+		QWidget *w = createImage(i);
 		vector.append(w);
 	}
 }
 
 void ImageBrowserView::updateView() {
-printf("updateView \n");
-	removeWidgets();
-	printf ("Hoehe = %d\nBreite = %d\n", height(), width());
-
 	if (vector.size() > 0) {
 		int saWidth = ((QScrollArea*) parent())->width();
 		columns = saWidth / DIA_SIZE;
-printf("columns = %d\n", columns);
-		int bla = model->getNoOfFiles();
-printf("nooffiles = %d\n", bla);
 		if (columns == 0) columns = 1;
 		rows = model->getNoOfFiles() / columns;
 		if ((model->getNoOfFiles() % columns) > 0) {
@@ -81,15 +68,42 @@ printf("nooffiles = %d\n", bla);
 	}
 }
 
-QWidget* ImageBrowserView::createImage() {
-printf("createImage \n");
-	QWidget *ret = new QWidget();
-	QLabel *label = new QLabel;
-	QImage image(":images/Dickie.jpg");
-	label->setPixmap(QPixmap::fromImage(image));
-	QBoxLayout *layout = new QBoxLayout(QBoxLayout::LeftToRight);
-	layout->addWidget(label);
-	ret->setLayout(layout);
-	ret->resize(DIA_SIZE, DIA_SIZE);
-	return ret;
+QWidget* ImageBrowserView::createImage(int i) {
+	QWidget *w0 = new QWidget();
+	//w0->setStyleSheet("background-color: #444");
+	QGridLayout *l0 = new QGridLayout();
+	w0->setLayout(l0);
+
+	QPixmap pixmap(100, 20);
+	pixmap.fill((new QColor("#323232"))->rgb()); //Qt::white);
+	QPen pen1;// = new QPen;
+	pen1.setColor(Qt::white);
+	pen1.setWidth(6);
+	QPen pen2;
+	pen2.setColor(Qt::white);
+	pen2.setWidth(1);
+	QPainter p(&pixmap);
+	p.setPen(pen1);
+	p.drawArc(7, 8, 6, 6, 0, 360 * 16);
+	p.drawArc(27, 8, 6, 6, 0, 360 * 16);
+	p.drawArc(48, 8, 6, 6, 0, 360 * 16);
+	p.setPen(pen2);
+	p.drawArc(65, 6, 10, 10, 0, 360 * 16);
+	p.drawArc(85, 6, 10, 10, 0, 360 * 16);
+	QLabel *rateLabel = new QLabel;
+	rateLabel->setPixmap(pixmap);
+	l0->addWidget(rateLabel, 0, 0, Qt::AlignCenter);
+
+	QImage image = model->getImage(i, DIA_SIZE - 50);
+	QLabel *imageLabel = new QLabel;
+	imageLabel->setPixmap(QPixmap::fromImage(image));
+	l0->addWidget(imageLabel, 1, 0, Qt::AlignCenter);
+	l0->setRowStretch(1, 100);
+	l0->setColumnStretch(0, 100);
+
+	QLabel *nameLabel = new QLabel(model->getFileName(i));
+	l0->addWidget(nameLabel, 2, 0, Qt::AlignCenter);
+
+	w0->setFixedSize(DIA_SIZE, DIA_SIZE);
+	return w0;
 }

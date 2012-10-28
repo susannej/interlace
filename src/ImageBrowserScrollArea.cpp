@@ -6,6 +6,6 @@
 void ImageBrowserScrollArea::resizeEvent(QResizeEvent *event) {
 	QWidget *child = widget();
 	if (child != 0) {
-		((ImageBrowserView*) child)->updateView();
+		((ImageBrowserView*) child)->resizeUpdate();
 	}
 }
