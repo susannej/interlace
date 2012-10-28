@@ -1,6 +1,7 @@
 #include "ImageBrowserView.h"
 
 #include "ImageBrowserModel.h"
+#include "ImageWidget.h"
 
 #define DIA_SIZE 200
 
@@ -69,41 +70,14 @@ void ImageBrowserView::updateView() {
 }
 
 QWidget* ImageBrowserView::createImage(int i) {
-	QWidget *w0 = new QWidget();
-	//w0->setStyleSheet("background-color: #444");
-	QGridLayout *l0 = new QGridLayout();
-	w0->setLayout(l0);
+	ImageWidget *imageWidget = new ImageWidget;
 
-	QPixmap pixmap(100, 20);
-	pixmap.fill((new QColor("#323232"))->rgb()); //Qt::white);
-	QPen pen1;// = new QPen;
-	pen1.setColor(Qt::white);
-	pen1.setWidth(6);
-	QPen pen2;
-	pen2.setColor(Qt::white);
-	pen2.setWidth(1);
-	QPainter p(&pixmap);
-	p.setPen(pen1);
-	p.drawArc(7, 8, 6, 6, 0, 360 * 16);
-	p.drawArc(27, 8, 6, 6, 0, 360 * 16);
-	p.drawArc(48, 8, 6, 6, 0, 360 * 16);
-	p.setPen(pen2);
-	p.drawArc(65, 6, 10, 10, 0, 360 * 16);
-	p.drawArc(85, 6, 10, 10, 0, 360 * 16);
-	QLabel *rateLabel = new QLabel;
-	rateLabel->setPixmap(pixmap);
-	l0->addWidget(rateLabel, 0, 0, Qt::AlignCenter);
+	imageWidget->setAbsoluteName(model->getAbsoluteFileName(i));
+	imageWidget->setRating(3);
+	imageWidget->setImage(model->getImage(i, DIA_SIZE - 50));
+	imageWidget->setName(model->getFileName(i));
+	imageWidget->setSize(DIA_SIZE, DIA_SIZE);
 
-	QImage image = model->getImage(i, DIA_SIZE - 50);
-	QLabel *imageLabel = new QLabel;
-	imageLabel->setPixmap(QPixmap::fromImage(image));
-	l0->addWidget(imageLabel, 1, 0, Qt::AlignCenter);
-	l0->setRowStretch(1, 100);
-	l0->setColumnStretch(0, 100);
-
-	QLabel *nameLabel = new QLabel(model->getFileName(i));
-	l0->addWidget(nameLabel, 2, 0, Qt::AlignCenter);
-
-	w0->setFixedSize(DIA_SIZE, DIA_SIZE);
-	return w0;
+	return imageWidget;
 }
+

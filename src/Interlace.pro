@@ -29,11 +29,15 @@ HEADERS += Interlace.h \
 	SourceTabView.h \
 	ImageBrowserScrollArea.h \
 	ImageBrowserView.h \
-	ImageBrowserModel.h
+	ImageBrowserModel.h \
+	ImageWidget.h \
+	RatingWidget.h
 
 SOURCES += Interlace.cpp \
 	MainView.cpp \
 	SourceTabView.cpp \
 	ImageBrowserScrollArea.cpp \
 	ImageBrowserView.cpp \
-	ImageBrowserModel.cpp
+	ImageBrowserModel.cpp \
+	ImageWidget.cpp \
+	RatingWidget.cpp

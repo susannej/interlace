@@ -45,6 +45,10 @@ QString ImageBrowserModel::getFileName(int i) {
 	return files.at(i).fileName();
 }
 
+QString ImageBrowserModel::getAbsoluteFileName(int i) {
+	return files.at(i).absoluteFilePath();
+}
+
 QImage ImageBrowserModel::getImage(int index, int maxsize) {
 	QImage qimage;
 	try {

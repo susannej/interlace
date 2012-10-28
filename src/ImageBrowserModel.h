@@ -17,6 +17,7 @@ class ImageBrowserModel
 		int readdir();
 		int getNoOfFiles();
 		QString getFileName(int i);
+		QString getAbsoluteFileName(int i);
 		QImage getImage(int i, int maxsize);
 
 	private:
