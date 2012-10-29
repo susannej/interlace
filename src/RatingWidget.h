@@ -10,9 +10,19 @@ class RatingWidget : public QWidget
 
 	public:
 		RatingWidget();
+
+		void setRating(int i);
+		int getRating();
 		
-		void mouseMoveEvent(QMouseEvent *event);
+		//void mouseMoveEvent(QMouseEvent *event);
 		void mousePressEvent(QMouseEvent *event);
+		void paintEvent(QPaintEvent *event);
+
+	private:
+		int rating;
+		QImage image;
+		QImage starOn;
+		QImage starOff;
 
 };
 

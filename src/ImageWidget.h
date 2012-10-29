@@ -26,9 +26,7 @@ class ImageWidget : public QWidget
 		QString imageAbsoluteName;
 		QGridLayout *widgetLayout;
 
-		QPixmap *ratingPixmap;
-		QLabel *ratingLabel;
-		//RatingWidget *ratingWidget;
+		RatingWidget *ratingWidget;
 		QLabel *imageLabel;
 		QLabel *nameLabel;
 };

@@ -4,5 +4,8 @@
     <file alias="down_arrow.png">images/down_arrow.png</file>
     <file>images/handle.png</file>
     <file>images/Dickie.jpg</file>
+    <file>images/ratingImage.png</file>
+    <file>images/star_on.png</file>
+    <file>images/star_off.png</file>
   </qresource>
 </RCC>

@@ -9,10 +9,8 @@ ImageWidget::ImageWidget() {
 	widgetLayout->setRowStretch(1, 100);
 	widgetLayout->setColumnStretch(0, 100);
 
-	ratingLabel = new QLabel();
-	widgetLayout->addWidget(ratingLabel, 0, 0, Qt::AlignCenter);
-	//ratingWidget = new RatingWidget();
-	//widgetLayout->addWidget(ratingWidget, 0, 0, Qt::AlignCenter);
+	ratingWidget = new RatingWidget();
+	widgetLayout->addWidget(ratingWidget, 0, 0, Qt::AlignCenter);
 	imageLabel = new QLabel();
 	widgetLayout->addWidget(imageLabel, 1, 0, Qt::AlignCenter);
 	nameLabel = new QLabel();
@@ -33,25 +31,7 @@ void ImageWidget::setAbsoluteName(QString absoluteName) {
 }
 
 void ImageWidget::setRating(int rating) {
-/* */
-	QPixmap ratingPixmap(100, 20);
-	ratingPixmap.fill((new QColor("#323232"))->rgb()); //Qt::white);
-	QPen pen1;// = new QPen;
-	pen1.setColor(Qt::white);
-	pen1.setWidth(6);
-	QPen pen2;
-	pen2.setColor(Qt::white);
-	pen2.setWidth(1);
-	QPainter p(&ratingPixmap);
-	p.setPen(pen1);
-	p.drawArc(7, 8, 6, 6, 0, 360 * 16);
-	p.drawArc(27, 8, 6, 6, 0, 360 * 16);
-	p.drawArc(48, 8, 6, 6, 0, 360 * 16);
-	p.setPen(pen2);
-	p.drawArc(65, 6, 10, 10, 0, 360 * 16);
-	p.drawArc(85, 6, 10, 10, 0, 360 * 16);
-	ratingLabel->setPixmap(ratingPixmap);
-/* */
+	ratingWidget->setRating(rating);
 }
 
 void ImageWidget::setSize(int width, int height) {
