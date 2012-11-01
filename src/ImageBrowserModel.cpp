@@ -50,21 +50,48 @@ QString ImageBrowserModel::getAbsoluteFileName(int i) {
 }
 
 QImage ImageBrowserModel::getImage(int index, int maxsize) {
+	int orientation = 1;
 	QImage qimage;
 	try {
 		QString absoluteFilename = files.at(index).absoluteFilePath();
-		if (absoluteFilename.endsWith(".jpg", Qt::CaseInsensitive)
-			|| absoluteFilename.endsWith(".tiff", Qt::CaseInsensitive)
-			|| absoluteFilename.endsWith(".png", Qt::CaseInsensitive)
-			|| absoluteFilename.endsWith(".tif", Qt::CaseInsensitive)
-			|| absoluteFilename.endsWith(".jpeg", Qt::CaseInsensitive)) { // GIF, PSD, JP2, EPS auch noch ausprobieren!!!
-			qimage = QImage(absoluteFilename);
+
+		// Read the Metadata to get later at least the orientation...
+		Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
+		image->readMetadata();
+		Exiv2::ExifData exifData = image->exifData();
+		Exiv2::Exifdatum exifDatum = exifData["Exif.Image.Orientation"];
+		orientation = (int) exifDatum.toLong();
+
+		// XMP's are only created for RAW-files, other files do have their information embedded in the image!
+		if (!absoluteFilename.endsWith(".jpg", Qt::CaseInsensitive)
+			&& !absoluteFilename.endsWith(".tiff", Qt::CaseInsensitive)
+			&& !absoluteFilename.endsWith(".png", Qt::CaseInsensitive)
+			&& !absoluteFilename.endsWith(".tif", Qt::CaseInsensitive)
+			&& !absoluteFilename.endsWith(".jpeg", Qt::CaseInsensitive)) {
+			
+			QString xmpFile = absoluteFilename.replace(absoluteFilename.size() -3, 3, "xmp");
+			if (currentDirectory.exists(xmpFile)) {
+				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toAscii().data());
+				xmpImage->readMetadata();
+				Exiv2::ExifData xmpExifData = xmpImage->exifData();
+				Exiv2::Exifdatum xmpExifDatum = xmpExifData["Exif.Image.Orientation"];
+				int xmpOrientation = (int) xmpExifDatum.toLong();
+				if (xmpOrientation != -1) {
+					orientation = xmpOrientation;
+				}
+			}
+		}
+
+		if (currentDirectory.exists("_PhotoNinja/" + files.at(index).fileName().replace(".", "_") + ".preview")) {
+			qimage = QImage(currentDirectory.absolutePath() +"/_PhotoNinja/" + files.at(index).fileName().replace(".", "_") + ".preview");
 		} else {
-			if (currentDirectory.exists("_PhotoNinja/" + files.at(index).fileName().replace(".", "_") + ".preview")) {
-				qimage = QImage(currentDirectory.absolutePath() +"/_PhotoNinja/" + files.at(index).fileName().replace(".", "_") + ".preview");
+			if (absoluteFilename.endsWith(".jpg", Qt::CaseInsensitive)
+				|| absoluteFilename.endsWith(".tiff", Qt::CaseInsensitive)
+				|| absoluteFilename.endsWith(".png", Qt::CaseInsensitive)
+				|| absoluteFilename.endsWith(".tif", Qt::CaseInsensitive)
+				|| absoluteFilename.endsWith(".jpeg", Qt::CaseInsensitive)) { // GIF, PSD, JP2, EPS auch noch ausprobieren!!!
+				qimage = QImage(absoluteFilename);
 			} else {
-				Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
-				image->readMetadata();
 				Exiv2::PreviewManager manager(*image);
 				Exiv2::PreviewPropertiesList props = manager.getPreviewProperties();
 				int i = 0;
@@ -89,8 +116,66 @@ QImage ImageBrowserModel::getImage(int index, int maxsize) {
 	}
 
 	if (qimage.width() > qimage.height()) {
-		return qimage.scaledToWidth(maxsize, Qt::SmoothTransformation); // Qt::SmoothTransformation oder Qt::FastTransformation
+		qimage = qimage.scaledToWidth(maxsize, Qt::SmoothTransformation); // Qt::SmoothTransformation oder Qt::FastTransformation
 	} else {
-		return qimage.scaledToHeight(maxsize, Qt::SmoothTransformation);
+		qimage = qimage.scaledToHeight(maxsize, Qt::SmoothTransformation);
 	}
+
+	if (orientation != 1) {
+		QTransform tf;
+		switch (orientation) {
+			case 3:
+				tf.rotate(180);
+				break;
+			case 6:
+				tf.rotate(90);
+				break;
+			case 8:
+				tf.rotate(270);
+				break;
+		}	
+		qimage = qimage.transformed(tf, Qt::SmoothTransformation);
+	}
+
+	return qimage;
+}
+
+int ImageBrowserModel::getRating(int index) {
+	int rating = 0;
+	try {
+		QString absoluteFilename = files.at(index).absoluteFilePath();
+
+		// Read the Metadata to get later at least the orientation...
+		Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
+		image->readMetadata();
+		Exiv2::XmpData xmpData = image->xmpData();
+		Exiv2::Xmpdatum xmpDatum = xmpData["Xmp.xmp.Rating"];
+		rating = (int) xmpDatum.toLong();
+
+		// XMP's are only created for RAW-files, other files do have their information embedded in the image!
+		if (!absoluteFilename.endsWith(".jpg", Qt::CaseInsensitive)
+			&& !absoluteFilename.endsWith(".tiff", Qt::CaseInsensitive)
+			&& !absoluteFilename.endsWith(".png", Qt::CaseInsensitive)
+			&& !absoluteFilename.endsWith(".tif", Qt::CaseInsensitive)
+			&& !absoluteFilename.endsWith(".jpeg", Qt::CaseInsensitive)) {
+			
+			QString xmpFile = absoluteFilename.replace(absoluteFilename.size() -3, 3, "xmp");
+			if (currentDirectory.exists(xmpFile)) {
+				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toAscii().data());
+				xmpImage->readMetadata();
+				Exiv2::XmpData xmpXmpData = xmpImage->xmpData();
+				Exiv2::Xmpdatum xmpXmpDatum = xmpXmpData["Xmp.xmp.Rating"];
+				int xmpRating = (int) xmpXmpDatum.toLong();
+				if (xmpRating != -1) {
+					rating = xmpRating;
+				}
+			}
+		}
+
+	} catch (Exiv2::AnyError& e) {
+		std::cout << "Caught Exiv2 exception '" << e << "'\n";
+	}
+
+	if (rating < 0) rating = 0;
+	return rating;
 }

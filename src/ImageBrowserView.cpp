@@ -73,7 +73,7 @@ QWidget* ImageBrowserView::createImage(int i) {
 	ImageWidget *imageWidget = new ImageWidget;
 
 	imageWidget->setAbsoluteName(model->getAbsoluteFileName(i));
-	imageWidget->setRating(3);
+	imageWidget->setRating(model->getRating(i));
 	imageWidget->setImage(model->getImage(i, DIA_SIZE - 50));
 	imageWidget->setName(model->getFileName(i));
 	imageWidget->setSize(DIA_SIZE, DIA_SIZE);
