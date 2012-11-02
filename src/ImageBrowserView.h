@@ -19,6 +19,7 @@ class ImageBrowserView : public QWidget
 		void cleanupWidgets();
 		void createWidgets();
 		QWidget* createImage(int i);
+		void updateRating(QString name, int rating);
 
 	private:
 		ImageBrowserModel *model;

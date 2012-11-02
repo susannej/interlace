@@ -1,5 +1,6 @@
 #include "ImageWidget.h"
 #include "RatingWidget.h"
+#include "ImageBrowserView.h"
 
 ImageWidget::ImageWidget() {
 	//setStyleSheet("background-color: #444");
@@ -23,6 +24,7 @@ void ImageWidget::setImage(QImage image) {
 }
 
 void ImageWidget::setName(QString name) {
+	imageName = name;
 	nameLabel->setText(name);
 }
 
@@ -32,6 +34,11 @@ void ImageWidget::setAbsoluteName(QString absoluteName) {
 
 void ImageWidget::setRating(int rating) {
 	ratingWidget->setRating(rating);
+}
+
+void ImageWidget::updateRating(int rating) {
+printf("vor ImageBrowserView updateRating\n");
+	((ImageBrowserView*) parent())->updateRating(imageName, rating);
 }
 
 void ImageWidget::setSize(int width, int height) {

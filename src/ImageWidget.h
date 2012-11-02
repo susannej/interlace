@@ -19,11 +19,13 @@ class ImageWidget : public QWidget
 		void setAbsoluteName(QString absoluteName);
 		void setRating(int rating);
 		void setSize(int width, int height);
+		void updateRating(int rating);
 
 		void mouseDoubleClickEvent(QMouseEvent *event);
 
 	private:
 		QString imageAbsoluteName;
+		QString imageName;
 		QGridLayout *widgetLayout;
 
 		RatingWidget *ratingWidget;

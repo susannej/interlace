@@ -32,7 +32,7 @@ int ImageBrowserModel::readdir() {
 	fileExt << "*.jpg" << "*.jpeg" << "*.tiff" << "*.tif" << "*.png" << "*.gif" << "*.psd" << "*.jp2" << "*.eps" << "*.exv";
 	files = currentDirectory.entryInfoList(fileExt, QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
 
-printf("Directory enhaelt %d images\n", files.size());
+printf("Directory enthaelt %d images\n", files.size());
 
 	return files.size();
 }
@@ -178,4 +178,74 @@ int ImageBrowserModel::getRating(int index) {
 
 	if (rating < 0) rating = 0;
 	return rating;
+}
+
+void ImageBrowserModel::updateRating(int i, int rating) {
+printf("in ImageBrowserModel upateRating int = %d int= %d \n", i, rating);
+	try {
+		QString absoluteFilename = files.at(i).absoluteFilePath();
+
+
+		// XMP's are only created for RAW-files, other files do have their information embedded in the image!
+		if (absoluteFilename.endsWith(".jpg", Qt::CaseInsensitive)
+			|| absoluteFilename.endsWith(".tiff", Qt::CaseInsensitive)
+			|| absoluteFilename.endsWith(".png", Qt::CaseInsensitive)
+			|| absoluteFilename.endsWith(".tif", Qt::CaseInsensitive)
+			|| absoluteFilename.endsWith(".jpeg", Qt::CaseInsensitive)) {
+
+printf("jpeg file \n");
+
+			// Read the Metadata to get later at least the orientation...
+			Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
+assert(image.get() != 0);
+			image->readMetadata();
+			Exiv2::XmpData xmpData = image->xmpData();
+			xmpData["Xmp.xmp.Rating"] = rating;
+			image->setXmpData(xmpData);
+			image->writeMetadata();
+			//Exiv2::Xmpdatum xmpDatum = xmpData["Xmp.xmp.Rating"];
+			//rating = (int) xmpDatum.toLong();
+
+		} else {
+
+printf("RAW file \n");
+			
+			QString xmpFile = absoluteFilename.replace(absoluteFilename.size() -3, 3, "xmp");
+			if (currentDirectory.exists(xmpFile)) {
+printf("RAW file EXISTS\n");
+				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toAscii().data());
+assert(xmpImage.get() != 0);
+				xmpImage->readMetadata();
+				Exiv2::XmpData xmpXmpData = xmpImage->xmpData();
+				xmpXmpData["Xmp.xmp.Rating"] = rating;
+printf("Xmp.xmp.Rating = %ld\n", xmpXmpData["Xmp.xmp.Rating"].toLong());
+				xmpImage->setXmpData(xmpXmpData);
+
+				//Exiv2::ExifData xmpExifData = xmpImage->exifData();
+				//Exiv2::Exifdatum xmpExifDatum = xmpExifData["Exif.Image.Orientation"];
+				//xmpExifData["Exif.Image.Orientation"] = 8;
+				//xmpImage->setExifData(xmpExifData);
+
+				xmpImage->writeMetadata();
+printf("Metadata written \n");
+				//Exiv2::Xmpdatum xmpXmpDatum = xmpXmpData["Xmp.xmp.Rating"];
+				//int xmpRating = (int) xmpXmpDatum.toLong();
+				//if (xmpRating != -1) {
+				//	rating = xmpRating;
+				//}
+			}
+		}
+
+	} catch (Exiv2::AnyError& e) {
+		std::cout << "Caught Exiv2 exception '" << e << "'\n";
+	}
+}
+
+void ImageBrowserModel::updateRating(QString name, int rating) {
+	int i = 0;
+	while (i < files.size() && name != files.at(i).fileName()) {
+		i++;
+	}
+printf("in ImageBrowserModel updateRating String\n");
+	updateRating(i, rating);
 }

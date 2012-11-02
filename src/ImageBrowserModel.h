@@ -20,6 +20,8 @@ class ImageBrowserModel
 		QString getAbsoluteFileName(int i);
 		QImage getImage(int i, int maxsize);
 		int getRating(int i);
+		void updateRating(int i, int rating);
+		void updateRating(QString name, int rating);
 
 	private:
 		ImageBrowserView *view;
