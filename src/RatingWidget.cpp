@@ -42,7 +42,6 @@ void RatingWidget::mousePressEvent(QMouseEvent *event) {
 	} else if (point.x() < 120) {
 		setRating(5);
 	}
-printf("vor imageWidget updateRating\n");
 	((ImageWidget*) parent())->updateRating(getRating());
 }
 

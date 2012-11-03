@@ -20,11 +20,8 @@ void ImageBrowserView::dirSelected(QString directoryName) {
 	removeWidgets();
 	cleanupWidgets();
 	model->dirSelected(directoryName);
-printf("Step1\n");
 	createWidgets();
-printf("Step2\n");
 	updateView();
-printf("Step3\n");
 	QApplication::restoreOverrideCursor();
 }
 
@@ -85,7 +82,6 @@ QWidget* ImageBrowserView::createImage(int i) {
 }
 
 void ImageBrowserView::updateRating(QString name, int rating) {
-printf("vor ImageBrowserModel updateRating\n");
 	model->updateRating(name, rating);
 }
 

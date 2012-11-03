@@ -37,7 +37,6 @@ void ImageWidget::setRating(int rating) {
 }
 
 void ImageWidget::updateRating(int rating) {
-printf("vor ImageBrowserView updateRating\n");
 	((ImageBrowserView*) parent())->updateRating(imageName, rating);
 }
 

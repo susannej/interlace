@@ -6,6 +6,7 @@ src/Makefile*
 src/vc100.pdb
 moc_*
 *.o
+*~
 
 #don't ignore the .gitignore
 !.gitignore
