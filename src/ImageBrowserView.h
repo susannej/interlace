@@ -21,6 +21,9 @@ class ImageBrowserView : public QWidget
 		QWidget* createImage(int i);
 		void updateRating(QString name, int rating);
 
+	signals:
+		void progressValueChanged(int newValue);
+
 	private:
 		ImageBrowserModel *model;
 		int rows, columns;

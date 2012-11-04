@@ -13,6 +13,8 @@ ImageBrowserView::ImageBrowserView() {
 	setLayout(gridLayout);
 
 	model = new ImageBrowserModel(this);
+
+	progressValueChanged(0);
 }
 
 void ImageBrowserView::dirSelected(QString directoryName) {
@@ -47,10 +49,23 @@ void ImageBrowserView::cleanupWidgets() {
 }
 
 void ImageBrowserView::createWidgets() {
-	for(int i = 0; i < model->getNoOfFiles(); i++) {
+	int max = model->getNoOfFiles();
+	int oldProgress = 0;
+	int currentProgress = 0;
+	progressValueChanged(0);
+	for(int i = 0; i < max; i++) {
 		QWidget *w = createImage(i);
 		vector.append(w);
+
+		// informieren der ProgressBar
+		currentProgress = i * 100 / max;
+		if (currentProgress != oldProgress) {
+printf("currentProgress = %d\n", currentProgress);
+			progressValueChanged(currentProgress);
+			oldProgress = currentProgress;
+		}
 	}
+	progressValueChanged(0);
 }
 
 void ImageBrowserView::updateView() {
