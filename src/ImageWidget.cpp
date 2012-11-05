@@ -16,7 +16,14 @@ ImageWidget::ImageWidget() {
 	widgetLayout->addWidget(imageLabel, 1, 0, Qt::AlignCenter);
 	nameLabel = new QLabel();
 	widgetLayout->addWidget(nameLabel, 2, 0, Qt::AlignCenter);
+}
 
+ImageWidget::~ImageWidget() {
+	delete nameLabel;
+	// TODO: ??? delete imageLabel->pixmap;
+	delete imageLabel;
+	delete ratingWidget;
+	delete widgetLayout;
 }
 
 void ImageWidget::setImage(QImage image) {
@@ -46,8 +53,6 @@ void ImageWidget::setSize(int width, int height) {
 
 void ImageWidget::mouseDoubleClickEvent(QMouseEvent *event) {
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
-	printf("Mouse DoubleClicked\n");
 
 	system(("wine /home/joe/.wine/drive_c/windows/command/start.exe /Unix /home/joe/.wine/drive_c/Programme/PictureCode/PhotoNinja/PhotoNinja32.exe z:\"" + imageAbsoluteName + "\"").toAscii().data());
 	QApplication::restoreOverrideCursor();
