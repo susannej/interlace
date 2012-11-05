@@ -20,7 +20,6 @@ ImageWidget::ImageWidget() {
 
 ImageWidget::~ImageWidget() {
 	delete nameLabel;
-	// TODO: ??? delete imageLabel->pixmap;
 	delete imageLabel;
 	delete ratingWidget;
 	delete widgetLayout;
@@ -28,6 +27,7 @@ ImageWidget::~ImageWidget() {
 
 void ImageWidget::setImage(QImage image) {
 	imageLabel->setPixmap(QPixmap::fromImage(image));
+	delete image;
 }
 
 void ImageWidget::setName(QString name) {
