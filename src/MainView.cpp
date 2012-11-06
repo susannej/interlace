@@ -20,15 +20,44 @@ MainView::MainView(QWidget *parent) {
 	lVl->addWidget(dirProgress, 1, 0);
 
 	// Browser Area
+	midView = new QWidget;
+	QGridLayout *mVl = new QGridLayout;
+	midView->setLayout(mVl);
+
+	QToolButton *refresh = new QToolButton;
+	refresh->setText("Refresh");
+	QToolBar *topBar = new QToolBar;
+	topBar->addWidget(refresh);
+	
 	ImageBrowserScrollArea *scrollArea = new ImageBrowserScrollArea;
 	scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 	browser = new ImageBrowserView();
 	scrollArea->setWidget(browser);
 
+	QToolButton *turnLeft = new QToolButton;
+	turnLeft->setText("turnLeft");
+	QToolButton *turnRight = new QToolButton;
+	turnRight->setText("turnRight");
+	QToolButton *ctrl = new QToolButton;
+	ctrl->setText("Ctrl");
+	ctrl->setCheckable(true);
+	QToolBar *bottomBar = new QToolBar;
+	bottomBar->addWidget(turnLeft);
+	bottomBar->addWidget(turnRight);
+	bottomBar->addWidget(ctrl);
+
+	mVl->addWidget(topBar, 0, 0);
+	mVl->addWidget(scrollArea, 1, 0);
+	mVl->addWidget(bottomBar, 2, 0);
+
 	connect(browser, SIGNAL(progressValueChanged(int)), dirProgress, SLOT(setValue(int)));
+	connect(refresh, SIGNAL(clicked()), browser, SLOT(dirUpdate()));
+	connect(ctrl, SIGNAL(clicked(bool)), browser, SLOT(toggleSelectionMode(bool)));
+	connect(turnLeft, SIGNAL(clicked()), browser, SLOT(rotateSelectionLeft()));
+	connect(turnRight, SIGNAL(clicked()), browser, SLOT(rotateSelectionRight()));
 
 	addWidget(leftView);
-	addWidget(scrollArea);
+	addWidget(midView);
 }
 
 void MainView::dirSelected(QString directoryName) {

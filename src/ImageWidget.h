@@ -13,6 +13,7 @@ class ImageWidget : public QWidget
 
 	public:
 		ImageWidget();
+		~ImageWidget();
 		
 		void setImage(QImage image);
 		void setName(QString name);
@@ -20,10 +21,16 @@ class ImageWidget : public QWidget
 		void setRating(int rating);
 		void setSize(int width, int height);
 		void updateRating(int rating);
+		void setSelected(bool sel);
+		bool isSelected();
 
+		void mousePressEvent(QMouseEvent *event);
 		void mouseDoubleClickEvent(QMouseEvent *event);
+		void paintEvent(QPaintEvent *event);
 
 	private:
+		bool selected;
+
 		QString imageAbsoluteName;
 		QString imageName;
 		QGridLayout *widgetLayout;

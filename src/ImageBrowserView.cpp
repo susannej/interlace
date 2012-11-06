@@ -8,6 +8,7 @@
 ImageBrowserView::ImageBrowserView() {
 	rows = 0;
 	columns = 0;
+	ctrlButtonPressed = false;
 
 	gridLayout = new QGridLayout();
 	setLayout(gridLayout);
@@ -15,6 +16,8 @@ ImageBrowserView::ImageBrowserView() {
 	model = new ImageBrowserModel(this);
 
 	progressValueChanged(0);
+
+	connect(this, SIGNAL(showWidget(QWidget*, int)), this, SLOT(addWidget2View(QWidget*, int)));
 }
 
 void ImageBrowserView::dirSelected(QString directoryName) {
@@ -22,6 +25,16 @@ void ImageBrowserView::dirSelected(QString directoryName) {
 	removeWidgets();
 	cleanupWidgets();
 	model->dirSelected(directoryName);
+	createWidgets();
+	updateView();
+	QApplication::restoreOverrideCursor();
+}
+
+void ImageBrowserView::dirUpdate() {
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+	removeWidgets();
+	cleanupWidgets();
+	model->dirUpdate();
 	createWidgets();
 	updateView();
 	QApplication::restoreOverrideCursor();
@@ -53,6 +66,7 @@ void ImageBrowserView::createWidgets() {
 	int oldProgress = 0;
 	int currentProgress = 0;
 	progressValueChanged(0);
+
 	for(int i = 0; i < max; i++) {
 		QWidget *w = createImage(i);
 		vector.append(w);
@@ -60,7 +74,6 @@ void ImageBrowserView::createWidgets() {
 		// informieren der ProgressBar
 		currentProgress = i * 100 / max;
 		if (currentProgress != oldProgress) {
-printf("currentProgress = %d\n", currentProgress);
 			progressValueChanged(currentProgress);
 			oldProgress = currentProgress;
 		}
@@ -69,6 +82,7 @@ printf("currentProgress = %d\n", currentProgress);
 }
 
 void ImageBrowserView::updateView() {
+
 	if (vector.size() > 0) {
 		int saWidth = ((QScrollArea*) parent())->width();
 		columns = saWidth / DIA_SIZE;
@@ -79,9 +93,15 @@ void ImageBrowserView::updateView() {
 		}
 		setFixedSize(columns * DIA_SIZE, rows * DIA_SIZE);
 		for (int i = 0; i < vector.size(); i++) {
-			gridLayout->addWidget(vector[i], (int) i / columns, (int) i % columns);
+			//gridLayout->addWidget(vector[i], (int) i / columns, (int) i % columns);
+			showWidget(vector[i], i);
 		}
 	}
+
+}
+
+void ImageBrowserView::addWidget2View(QWidget *image, int i) {
+	gridLayout->addWidget(image, (int) i / columns, (int) i % columns);
 }
 
 QWidget* ImageBrowserView::createImage(int i) {
@@ -98,5 +118,45 @@ QWidget* ImageBrowserView::createImage(int i) {
 
 void ImageBrowserView::updateRating(QString name, int rating) {
 	model->updateRating(name, rating);
+}
+
+void ImageBrowserView::rotateSelectionLeft() {
+	for (int i = 0; i < vector.size(); i++) {
+		if (((ImageWidget*) vector[i])->isSelected()) {
+			model->rotateImage(i, ImageBrowserModel::LEFT);
+			delete vector[i];
+			vector[i] = createImage(i);
+			showWidget(vector[i], i);
+			((ImageWidget*) vector[i])->setSelected(true);
+		}
+	}
+}
+
+void ImageBrowserView::rotateSelectionRight() {
+	for (int i = 0; i < vector.size(); i++) {
+		if (((ImageWidget*) vector[i])->isSelected()) {
+			model->rotateImage(i, ImageBrowserModel::RIGHT);
+			delete vector[i];
+			vector[i] = createImage(i);
+			showWidget(vector[i], i);
+			((ImageWidget*) vector[i])->setSelected(true);
+		}
+	}
+}
+
+void ImageBrowserView::toggleSelectionMode(bool mode) {
+	ctrlButtonPressed = mode;
+}
+
+bool ImageBrowserView::isCtrlButtonPressed() {
+	return ctrlButtonPressed;
+}
+
+void ImageBrowserView::clearSelection() {
+	for (int i = 0; i < vector.size(); i++) {
+		if (((ImageWidget*) vector[i])->isSelected()) {
+			((ImageWidget*) vector[i])->setSelected(false);
+		}
+	}
 }
 

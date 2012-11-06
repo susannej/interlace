@@ -10,12 +10,14 @@ class ImageBrowserModel
 {
 	//Q_OBJECT
 	
-	enum Rotation {LEFT, RIGHT};
 
 	public:
+		enum Rotation {LEFT, RIGHT};
+
 		ImageBrowserModel(ImageBrowserView *view);
 		
 		void dirSelected(QString directoryName);
+		void dirUpdate();
 		int readdir();
 		int getNoOfFiles();
 		QString getFileName(int i);
@@ -33,6 +35,8 @@ class ImageBrowserModel
 		QDir photoNinjaDirectory;
 		QFileInfoList files;
 		bool photoNinjaExists;
+
+		int getImageOrientation(int i);
 };
 
 #endif

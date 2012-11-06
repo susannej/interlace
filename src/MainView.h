@@ -18,9 +18,12 @@ class MainView : public QSplitter
 
 	private:
 		QWidget *parent;
+
 		QWidget *leftView;
 		SourceTabView *tabview;
 		QProgressBar *dirProgress;
+
+		QWidget *midView;
 		ImageBrowserScrollArea *scrollArea;
 		ImageBrowserView *browser;
 };

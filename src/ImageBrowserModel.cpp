@@ -12,16 +12,21 @@ ImageBrowserModel::ImageBrowserModel(ImageBrowserView *view) {
 
 void ImageBrowserModel::dirSelected(QString directoryName) {
 	currentDirectory = QDir(directoryName);
+	dirUpdate();
+}
 
+void ImageBrowserModel::dirUpdate() {
 	if (currentDirectory.exists("_PhotoNinja")) {
 		photoNinjaExists = true;
 	} else {
 		photoNinjaExists = false;
 	}
 
-	QByteArray barray = directoryName.toAscii();
+	/*
+	QByteArray barray = currentDirectory.toAscii();
 	char* s = barray.data();
 	printf("dirtree activated %s\n", s);
+	*/
 
 	readdir();
 }
@@ -49,9 +54,8 @@ QString ImageBrowserModel::getAbsoluteFileName(int i) {
 	return files.at(i).absoluteFilePath();
 }
 
-QImage ImageBrowserModel::getImage(int index, int maxsize) {
+int ImageBrowserModel::getImageOrientation(int index) {
 	int orientation = 1;
-	QImage qimage;
 	try {
 		QString absoluteFilename = files.at(index).absoluteFilePath();
 
@@ -81,6 +85,18 @@ QImage ImageBrowserModel::getImage(int index, int maxsize) {
 				}
 			}
 		}
+	} catch (Exiv2::AnyError& e) {
+		std::cout << "Caught Exiv2 exception '" << e << "'\n";
+	}
+
+	return orientation;
+}
+
+QImage ImageBrowserModel::getImage(int index, int maxsize) {
+	QImage qimage;
+	int orientation = getImageOrientation(index);
+	try {
+		QString absoluteFilename = files.at(index).absoluteFilePath();
 
 		if (currentDirectory.exists("_PhotoNinja/" + files.at(index).fileName().replace(".", "_") + ".preview")) {
 			qimage = QImage(currentDirectory.absolutePath() +"/_PhotoNinja/" + files.at(index).fileName().replace(".", "_") + ".preview");
@@ -92,6 +108,8 @@ QImage ImageBrowserModel::getImage(int index, int maxsize) {
 				|| absoluteFilename.endsWith(".jpeg", Qt::CaseInsensitive)) { // GIF, PSD, JP2, EPS auch noch ausprobieren!!!
 				qimage = QImage(absoluteFilename);
 			} else {
+				Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
+				image->readMetadata();
 				Exiv2::PreviewManager manager(*image);
 				Exiv2::PreviewPropertiesList props = manager.getPreviewProperties();
 				int i = 0;
@@ -238,6 +256,40 @@ void ImageBrowserModel::updateRating(QString name, int rating) {
 }
 
 void ImageBrowserModel::rotateImage(int i, Rotation direction) {
+	int orientation = getImageOrientation(i);
+
+	if (direction == RIGHT) {
+		switch (orientation) {
+			case 1:
+				orientation = 8;
+				break;
+			case 3:
+				orientation = 6;
+				break;
+			case 6:
+				orientation = 1;
+				break;
+			case 8:
+				orientation = 3;
+				break;
+		}
+	} else if (direction == LEFT) {
+		switch (orientation) {
+			case 1:
+				orientation = 6;
+				break;
+			case 3:
+				orientation = 8;
+				break;
+			case 6:
+				orientation = 3;
+				break;
+			case 8:
+				orientation = 1;
+				break;
+		}
+	}
+
 	try {
 		QString absoluteFilename = files.at(i).absoluteFilePath();
 
@@ -249,15 +301,11 @@ void ImageBrowserModel::rotateImage(int i, Rotation direction) {
 			|| absoluteFilename.endsWith(".tif", Qt::CaseInsensitive)
 			|| absoluteFilename.endsWith(".jpeg", Qt::CaseInsensitive)) {
 
-			// Read the Metadata to get later at least the orientation...
 			Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
 			image->readMetadata();
-			Exiv2::XmpData xmpData = image->xmpData();
-			Exiv2::Xmpdatum xmpDatum = xmpData["Exif.Image.Orientation"];
-			int orientation = (int) xmpDatum.toLong();
-			// TODO: orientation neu setzen
-			xmpData["Exif.Image.Orientation"] = orientation;
-			image->setXmpData(xmpData);
+			Exiv2::ExifData exifData = image->exifData();
+			exifData["Exif.Image.Orientation"] = orientation;
+			image->setExifData(exifData);
 			image->writeMetadata();
 
 		} else {
@@ -267,20 +315,18 @@ void ImageBrowserModel::rotateImage(int i, Rotation direction) {
 
 				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toAscii().data());
 				xmpImage->readMetadata();
-				Exiv2::XmpData xmpXmpData = xmpImage->xmpData();
-				Exiv2::Xmpdatum xmpDatum = xmpData["Exif.Image.Orientation"];
-				int orientation = (int) xmpDatum.toLong();
-				// TODO: orientation neu setzen
-				xmpData["Exif.Image.Orientation"] = orientation;
-				xmpImage->setXmpData(xmpXmpData);
+				Exiv2::ExifData exifData = xmpImage->exifData();
+				Exiv2::XmpProperties::registerNs("http://ns.adobe.com/tiff/1.0/", "tiff");
+				exifData["Exif.Image.Orientation"] = orientation;
+				xmpImage->setExifData(exifData);
 				xmpImage->writeMetadata();
 			} else {
 				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, xmpFile.toAscii().data());
-				Exiv2::XmpData xmpData;
-				Exiv2::XmpProperties::registerNs("http://ns.adobe.com/xap/1.0/", "xmp");
-				xmpData["Exif.Image.Orientation"] = rating;
+				Exiv2::ExifData exifData;
+				Exiv2::XmpProperties::registerNs("http://ns.adobe.com/tiff/1.0/", "tiff");
+				exifData["Exif.Image.Orientation"] = orientation;
 				
-				xmpImage->setXmpData(xmpData);
+				xmpImage->setExifData(exifData);
 				xmpImage->writeMetadata();
 
 			}
