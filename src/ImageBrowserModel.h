@@ -9,6 +9,8 @@ class ImageBrowserView;
 class ImageBrowserModel
 {
 	//Q_OBJECT
+	
+	enum Rotation {LEFT, RIGHT};
 
 	public:
 		ImageBrowserModel(ImageBrowserView *view);
@@ -22,6 +24,7 @@ class ImageBrowserModel
 		int getRating(int i);
 		void updateRating(int i, int rating);
 		void updateRating(QString name, int rating);
+		void rotateImage(int i, Rotation direction);
 
 	private:
 		ImageBrowserView *view;
