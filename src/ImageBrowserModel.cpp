@@ -236,3 +236,57 @@ void ImageBrowserModel::updateRating(QString name, int rating) {
 	}
 	updateRating(i, rating);
 }
+
+void ImageBrowserModel::rotateImage(int i, Rotation direction) {
+	try {
+		QString absoluteFilename = files.at(i).absoluteFilePath();
+
+
+		// XMP's are only created for RAW-files, other files do have their information embedded in the image!
+		if (absoluteFilename.endsWith(".jpg", Qt::CaseInsensitive)
+			|| absoluteFilename.endsWith(".tiff", Qt::CaseInsensitive)
+			|| absoluteFilename.endsWith(".png", Qt::CaseInsensitive)
+			|| absoluteFilename.endsWith(".tif", Qt::CaseInsensitive)
+			|| absoluteFilename.endsWith(".jpeg", Qt::CaseInsensitive)) {
+
+			// Read the Metadata to get later at least the orientation...
+			Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
+			image->readMetadata();
+			Exiv2::XmpData xmpData = image->xmpData();
+			Exiv2::Xmpdatum xmpDatum = xmpData["Exif.Image.Orientation"];
+			int orientation = (int) xmpDatum.toLong();
+			// TODO: orientation neu setzen
+			xmpData["Exif.Image.Orientation"] = orientation;
+			image->setXmpData(xmpData);
+			image->writeMetadata();
+
+		} else {
+
+			QString xmpFile = absoluteFilename.replace(absoluteFilename.size() -3, 3, "xmp");
+			if (currentDirectory.exists(xmpFile)) {
+
+				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toAscii().data());
+				xmpImage->readMetadata();
+				Exiv2::XmpData xmpXmpData = xmpImage->xmpData();
+				Exiv2::Xmpdatum xmpDatum = xmpData["Exif.Image.Orientation"];
+				int orientation = (int) xmpDatum.toLong();
+				// TODO: orientation neu setzen
+				xmpData["Exif.Image.Orientation"] = orientation;
+				xmpImage->setXmpData(xmpXmpData);
+				xmpImage->writeMetadata();
+			} else {
+				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, xmpFile.toAscii().data());
+				Exiv2::XmpData xmpData;
+				Exiv2::XmpProperties::registerNs("http://ns.adobe.com/xap/1.0/", "xmp");
+				xmpData["Exif.Image.Orientation"] = rating;
+				
+				xmpImage->setXmpData(xmpData);
+				xmpImage->writeMetadata();
+
+			}
+		}
+
+	} catch (Exiv2::AnyError& e) {
+		std::cout << "Caught Exiv2 exception '" << e << "'\n";
+	}
+}
