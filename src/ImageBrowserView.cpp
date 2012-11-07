@@ -84,14 +84,31 @@ void ImageBrowserView::createWidgets() {
 void ImageBrowserView::updateView() {
 
 	if (vector.size() > 0) {
+		// re-setting the previously set sizes of the spacer-columns and rows
+		for (int r = 0; r < rows; r++) {
+			gridLayout->setRowMinimumHeight(r * 2 +1, 0);
+		}
+		for (int c = 0; c < columns; c++) {
+			gridLayout->setColumnMinimumWidth(c * 2 +1, 0);
+		}		
+		
+		// determine the new count of rows and columns
 		int saWidth = ((QScrollArea*) parent())->width();
-		columns = saWidth / DIA_SIZE;
+		columns = saWidth / (DIA_SIZE + 10);
 		if (columns == 0) columns = 1;
 		rows = model->getNoOfFiles() / columns;
 		if ((model->getNoOfFiles() % columns) > 0) {
 			rows++;
 		}
-		setFixedSize(columns * DIA_SIZE, rows * DIA_SIZE);
+
+		// setting the new sizes of the spacer columns and rows
+		for (int r = 0; r < rows; r++) {
+			gridLayout->setRowMinimumHeight(r * 2 +1, 10);
+		}
+		for (int c = 0; c < columns; c++) {
+			gridLayout->setColumnMinimumWidth(c * 2 +1, 10);
+		}		
+		setFixedSize(columns * (DIA_SIZE + 10), rows * (DIA_SIZE + 10));
 		for (int i = 0; i < vector.size(); i++) {
 			//gridLayout->addWidget(vector[i], (int) i / columns, (int) i % columns);
 			showWidget(vector[i], i);
@@ -101,7 +118,7 @@ void ImageBrowserView::updateView() {
 }
 
 void ImageBrowserView::addWidget2View(QWidget *image, int i) {
-	gridLayout->addWidget(image, (int) i / columns, (int) i % columns);
+	gridLayout->addWidget(image, (int) (i / columns) * 2, (int) (i % columns) * 2);
 }
 
 QWidget* ImageBrowserView::createImage(int i) {
