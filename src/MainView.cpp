@@ -25,7 +25,7 @@ MainView::MainView(QWidget *parent) {
 	midView->setLayout(mVl);
 
 	QToolButton *refresh = new QToolButton;
-	refresh->setText("Refresh");
+	refresh->setIcon(QIcon(":/images/refresh.png"));
 	QToolBar *topBar = new QToolBar;
 	topBar->addWidget(refresh);
 	
@@ -35,15 +35,16 @@ MainView::MainView(QWidget *parent) {
 	scrollArea->setWidget(browser);
 
 	QToolButton *turnLeft = new QToolButton;
-	turnLeft->setText("turnLeft");
+	turnLeft->setIcon(QIcon(":/images/rotate_left.png"));
 	QToolButton *turnRight = new QToolButton;
-	turnRight->setText("turnRight");
+	turnRight->setIcon(QIcon(":/images/rotate_right.png"));
 	QToolButton *ctrl = new QToolButton;
-	ctrl->setText("Ctrl");
+	ctrl->setIcon(QIcon(":/images/key_ctrl.png"));
 	ctrl->setCheckable(true);
 	QToolBar *bottomBar = new QToolBar;
 	bottomBar->addWidget(turnLeft);
 	bottomBar->addWidget(turnRight);
+	bottomBar->addSeparator();
 	bottomBar->addWidget(ctrl);
 
 	mVl->addWidget(topBar, 0, 0);

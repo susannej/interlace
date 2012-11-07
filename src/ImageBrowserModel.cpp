@@ -261,31 +261,31 @@ void ImageBrowserModel::rotateImage(int i, Rotation direction) {
 	if (direction == RIGHT) {
 		switch (orientation) {
 			case 1:
-				orientation = 8;
-				break;
-			case 3:
 				orientation = 6;
 				break;
+			case 3:
+				orientation = 8;
+				break;
 			case 6:
-				orientation = 1;
+				orientation = 3;
 				break;
 			case 8:
-				orientation = 3;
+				orientation = 1;
 				break;
 		}
 	} else if (direction == LEFT) {
 		switch (orientation) {
 			case 1:
-				orientation = 6;
-				break;
-			case 3:
 				orientation = 8;
 				break;
+			case 3:
+				orientation = 6;
+				break;
 			case 6:
-				orientation = 3;
+				orientation = 1;
 				break;
 			case 8:
-				orientation = 1;
+				orientation = 3;
 				break;
 		}
 	}

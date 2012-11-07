@@ -7,5 +7,9 @@
     <file>images/ratingImage.png</file>
     <file>images/star_on.png</file>
     <file>images/star_off.png</file>
+    <file>images/refresh.png</file>
+    <file>images/rotate_left.png</file>
+    <file>images/rotate_right.png</file>
+    <file>images/key_ctrl.png</file>
   </qresource>
 </RCC>

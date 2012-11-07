@@ -121,27 +121,39 @@ void ImageBrowserView::updateRating(QString name, int rating) {
 }
 
 void ImageBrowserView::rotateSelectionLeft() {
-	for (int i = 0; i < vector.size(); i++) {
-		if (((ImageWidget*) vector[i])->isSelected()) {
-			model->rotateImage(i, ImageBrowserModel::LEFT);
-			delete vector[i];
-			vector[i] = createImage(i);
-			showWidget(vector[i], i);
-			((ImageWidget*) vector[i])->setSelected(true);
-		}
-	}
+	rotateSelection(ImageBrowserModel::LEFT);
 }
 
 void ImageBrowserView::rotateSelectionRight() {
+	rotateSelection(ImageBrowserModel::RIGHT);
+}
+
+void ImageBrowserView::rotateSelection(ImageBrowserModel::Rotation direction) {
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+	int max = getNoOfSelectedImages();
+	int oldProgress = 0;
+	int currentProgress = 0;
+	int j = 0;
+	progressValueChanged(0);
 	for (int i = 0; i < vector.size(); i++) {
 		if (((ImageWidget*) vector[i])->isSelected()) {
-			model->rotateImage(i, ImageBrowserModel::RIGHT);
+			model->rotateImage(i, direction);
 			delete vector[i];
 			vector[i] = createImage(i);
 			showWidget(vector[i], i);
 			((ImageWidget*) vector[i])->setSelected(true);
+
+			// informieren der ProgressBar
+			currentProgress = j * 100 / max;
+			if (currentProgress != oldProgress) {
+				progressValueChanged(currentProgress);
+				oldProgress = currentProgress;
+			}
+			j++;
 		}
 	}
+	progressValueChanged(0);
+	QApplication::restoreOverrideCursor();
 }
 
 void ImageBrowserView::toggleSelectionMode(bool mode) {
@@ -160,3 +172,12 @@ void ImageBrowserView::clearSelection() {
 	}
 }
 
+int ImageBrowserView::getNoOfSelectedImages() {
+	int no = 0;
+	for (int i = 0; i < vector.size(); i++) {
+		if (((ImageWidget*) vector[i])->isSelected()) {
+			no++;
+		}
+	}
+	return no;
+}

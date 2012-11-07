@@ -4,6 +4,8 @@
 
 #include <QtGui>
 
+#include "ImageBrowserModel.h"
+
 class ImageBrowserModel;
 
 class ImageBrowserView : public QWidget
@@ -22,6 +24,7 @@ class ImageBrowserView : public QWidget
 		void updateRating(QString name, int rating);
 		void clearSelection();
 		bool isCtrlButtonPressed();
+		int getNoOfSelectedImages();
 
 	public slots:
 		void addWidget2View(QWidget *image, int i);
@@ -42,6 +45,7 @@ class ImageBrowserView : public QWidget
 		bool ctrlButtonPressed;
 
 		void updateView();
+		void rotateSelection(ImageBrowserModel::Rotation direction);
 };
 
 #endif
