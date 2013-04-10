@@ -6,14 +6,16 @@ TEMPLATE = app
 TARGET = Interlace
 RESOURCES = Interlace.qrc
 DEPENDPATH += .
-INCLUDEPATH += . /usr/local/include
+
 
 win32 {
-	LIBS += 
+	LIBS += -LC:\\gnu\\exiv2\\msvc64\\exiv2lib\\Win32\\ReleaseDLL -lexiv2
+	INCLUDEPATH += . C:\\gnu\\exiv2\\msvc64\\include
 }
 
 unix {
 	LIBS += -L/usr/local/lib -lexiv2
+	INCLUDEPATH += . /usr/local/include
 }
 
 DESTDIR = ../bin
