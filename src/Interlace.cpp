@@ -1,12 +1,15 @@
 #include "Interlace.h"
 
 #include "MainView.h"
+#include "InterlaceConfig.h"
 
 #include "DarkStyleSheet.h"
 
 int main(int argc, char **argv) {
 	QApplication app(argc, argv);
 	app.setStyle("plastique");
+	
+	InterlaceConfig *config = InterlaceConfig::getInstance();
 
 	Interlace interlace;
 	interlace.setStyleSheet(DARK_STYLESHEET);

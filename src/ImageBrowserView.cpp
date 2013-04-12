@@ -2,8 +2,9 @@
 
 #include "ImageBrowserModel.h"
 #include "ImageWidget.h"
+#include "InterlaceConfig.h"
 
-#define DIA_SIZE 200
+//#define DIA_SIZE 200
 
 ImageBrowserView::ImageBrowserView() {
 	rows = 0;
@@ -84,6 +85,7 @@ void ImageBrowserView::createWidgets() {
 void ImageBrowserView::updateView() {
 
 	if (vector.size() > 0) {
+		InterlaceConfig *conf = InterlaceConfig::getInstance();
 		// re-setting the previously set sizes of the spacer-columns and rows
 		for (int r = 0; r < rows; r++) {
 			gridLayout->setRowMinimumHeight(r * 2 +1, 0);
@@ -94,7 +96,7 @@ void ImageBrowserView::updateView() {
 		
 		// determine the new count of rows and columns
 		int saWidth = ((QScrollArea*) parent())->width();
-		columns = saWidth / (DIA_SIZE + 10);
+		columns = saWidth / (conf->getImageSize() + 10);
 		if (columns == 0) columns = 1;
 		rows = model->getNoOfFiles() / columns;
 		if ((model->getNoOfFiles() % columns) > 0) {
@@ -108,7 +110,7 @@ void ImageBrowserView::updateView() {
 		for (int c = 0; c < columns; c++) {
 			gridLayout->setColumnMinimumWidth(c * 2 +1, 10);
 		}		
-		setFixedSize(columns * (DIA_SIZE + 10), rows * (DIA_SIZE + 10));
+		setFixedSize(columns * (conf->getImageSize() + 10), rows * (conf->getImageSize() + 10));
 		for (int i = 0; i < vector.size(); i++) {
 			//gridLayout->addWidget(vector[i], (int) i / columns, (int) i % columns);
 			showWidget(vector[i], i);
@@ -124,11 +126,12 @@ void ImageBrowserView::addWidget2View(QWidget *image, int i) {
 QWidget* ImageBrowserView::createImage(int i) {
 	ImageWidget *imageWidget = new ImageWidget;
 
+	InterlaceConfig *conf = InterlaceConfig::getInstance();
 	imageWidget->setAbsoluteName(model->getAbsoluteFileName(i));
 	imageWidget->setRating(model->getRating(i));
-	imageWidget->setImage(model->getImage(i, DIA_SIZE - 50));
+	imageWidget->setImage(model->getImage(i, conf->getImageSize() - 50));
 	imageWidget->setName(model->getFileName(i));
-	imageWidget->setSize(DIA_SIZE, DIA_SIZE);
+	imageWidget->setSize(conf->getImageSize(), conf->getImageSize());
 
 	return imageWidget;
 }

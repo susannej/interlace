@@ -27,6 +27,7 @@ void ImageBrowserModel::dirUpdate() {
 	char* s = barray.data();
 	printf("dirtree activated %s\n", s);
 	*/
+	printf("diretree activated\n");
 
 	readdir();
 }

@@ -28,6 +28,12 @@ class ImageWidget : public QWidget
 		void mouseDoubleClickEvent(QMouseEvent *event);
 		void paintEvent(QPaintEvent *event);
 
+	protected:
+		void contextMenuEvent(QContextMenuEvent *event);
+
+	private slots:
+		void execPrg(QAction*);
+
 	private:
 		bool selected;
 
