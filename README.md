@@ -14,14 +14,14 @@ Examples for the configuration-files:
 The configuration file should have the name Interlace.cfg and resides in the %USERPROFILE% directory
 
 ### Example content:
-ImageSize=250
-Prg=PhotoNinja;C:\Program Files\PictureCode\PhotoNinja\PhotoNinja64.exe
-Prg=Gimp;C:\Program Files\GIMP 2\bin\gimp-2.8.exe
-Prg=ImageViewer;C:\Program Files (x86)\FastStone Image Viewer\FSViewer.exe
+ImageSize=250  
+Prg=PhotoNinja;C:\Program Files\PictureCode\PhotoNinja\PhotoNinja64.exe  
+Prg=Gimp;C:\Program Files\GIMP 2\bin\gimp-2.8.exe  
+Prg=ImageViewer;C:\Program Files (x86)\FastStone Image Viewer\FSViewer.exe  
 
 ## Unix
 The configuration file should have the name Interlace.cfg and resides in the $HOME directory of the user
 
 ### Example content:
-ImageSize=250
-Prg=PhotoNinja;wine /home/joe/.wine/drive_c/windows/command/start.exe /Unix /home/joe/.wine/drive_c/Programme/PictureCode/PhotoNinja/PhotoNinja32.exe z:\
+ImageSize=250  
+Prg=PhotoNinja;wine /home/joe/.wine/drive_c/windows/command/start.exe /Unix /home/joe/.wine/drive_c/Programme/PictureCode/PhotoNinja/PhotoNinja32.exe z:\  
