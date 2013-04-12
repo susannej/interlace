@@ -4,9 +4,15 @@ bin/
 build/
 src/Makefile*
 src/vc100.pdb
+src/ipch/
 moc_*
 *.o
 *~
+*.vcxproj*
+*.sln
+*.sdf
+*.suo
+*.opensdf
 
 #don't ignore the .gitignore
 !.gitignore
