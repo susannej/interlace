@@ -27,6 +27,7 @@ class ImageBrowserModel
 		void updateRating(int i, int rating);
 		void updateRating(QString name, int rating);
 		void rotateImage(int i, Rotation direction);
+		void deleteImage(int i);
 
 	private:
 		ImageBrowserView *view;

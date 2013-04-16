@@ -22,6 +22,7 @@ ImageWidget::ImageWidget() {
 }
 
 ImageWidget::~ImageWidget() {
+	qDebug() << "ImageWidget Destructor called!";
 	delete nameLabel;
 	delete imageLabel;
 	delete ratingWidget;

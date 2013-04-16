@@ -176,6 +176,37 @@ void ImageBrowserView::rotateSelection(ImageBrowserModel::Rotation direction) {
 	QApplication::restoreOverrideCursor();
 }
 
+void ImageBrowserView::deleteSelection() {
+	int max = getNoOfSelectedImages();
+
+	if (max > 0 && QMessageBox::Yes == QMessageBox::question(this, "Delete Images", "Do you want to delete the selected images?", QMessageBox::Yes|QMessageBox::No)) {
+
+		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+		int oldProgress = 0;
+		int currentProgress = 0;
+		int j = 0;
+		progressValueChanged(0);
+		for (int i = vector.size() -1; i >= 0; i--) {
+			if (((ImageWidget*) vector[i])->isSelected()) {
+				model->deleteImage(i);
+				delete vector[i];
+				vector.remove(i);
+	
+				// informieren der ProgressBar
+				currentProgress = j * 100 / max;
+				if (currentProgress != oldProgress) {
+					progressValueChanged(currentProgress);
+					oldProgress = currentProgress;
+				}
+				j++;
+			}
+		}
+		progressValueChanged(0);
+		updateView();
+		QApplication::restoreOverrideCursor();
+	}
+}
+
 void ImageBrowserView::toggleSelectionMode(bool mode) {
 	ctrlButtonPressed = mode;
 }

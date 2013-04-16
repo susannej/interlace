@@ -31,6 +31,7 @@ class ImageBrowserView : public QWidget
 		void dirUpdate();
 		void rotateSelectionLeft();
 		void rotateSelectionRight();
+		void deleteSelection();
 		void toggleSelectionMode(bool mode);
 
 	signals:

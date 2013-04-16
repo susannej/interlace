@@ -337,3 +337,20 @@ void ImageBrowserModel::rotateImage(int i, Rotation direction) {
 		std::cout << "Caught Exiv2 exception '" << e << "'\n";
 	}
 }
+
+void ImageBrowserModel::deleteImage(int i) {
+	try {
+		QString absoluteFilename = files.at(i).absoluteFilePath();
+
+		qDebug() << "Deleting " + absoluteFilename;
+
+		QFile::remove(absoluteFilename);
+		files.removeAt(i);
+		QString xmpFile = absoluteFilename.replace(absoluteFilename.size() -3, 3, "xmp");
+		if (currentDirectory.exists(xmpFile)) {
+			QFile::remove(xmpFile);
+		}
+	} catch (Exiv2::AnyError& e) {
+		std::cout << "Caught Exiv2 exception '" << e << "'\n";
+	}
+}

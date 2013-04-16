@@ -38,12 +38,16 @@ MainView::MainView(QWidget *parent) {
 	turnLeft->setIcon(QIcon(":/images/rotate_left.png"));
 	QToolButton *turnRight = new QToolButton;
 	turnRight->setIcon(QIcon(":/images/rotate_right.png"));
+	QToolButton *deleteSelection = new QToolButton;
+	deleteSelection->setIcon(QIcon(":/images/gnome_edit_delete.png"));
 	QToolButton *ctrl = new QToolButton;
 	ctrl->setIcon(QIcon(":/images/key_ctrl.png"));
 	ctrl->setCheckable(true);
 	QToolBar *bottomBar = new QToolBar;
 	bottomBar->addWidget(turnLeft);
 	bottomBar->addWidget(turnRight);
+	bottomBar->addSeparator();
+	bottomBar->addWidget(deleteSelection);
 	bottomBar->addSeparator();
 	bottomBar->addWidget(ctrl);
 
@@ -56,6 +60,7 @@ MainView::MainView(QWidget *parent) {
 	connect(ctrl, SIGNAL(clicked(bool)), browser, SLOT(toggleSelectionMode(bool)));
 	connect(turnLeft, SIGNAL(clicked()), browser, SLOT(rotateSelectionLeft()));
 	connect(turnRight, SIGNAL(clicked()), browser, SLOT(rotateSelectionRight()));
+	connect(deleteSelection, SIGNAL(clicked()), browser, SLOT(deleteSelection()));
 
 	addWidget(leftView);
 	addWidget(midView);
