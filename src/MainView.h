@@ -26,6 +26,8 @@ class MainView : public QSplitter
 		QWidget *midView;
 		ImageBrowserScrollArea *scrollArea;
 		ImageBrowserView *browser;
+
+		QComboBox *starFilter;
 };
 
 #endif

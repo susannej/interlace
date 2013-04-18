@@ -41,6 +41,17 @@ void ImageBrowserView::dirUpdate() {
 	QApplication::restoreOverrideCursor();
 }
 
+void ImageBrowserView::setStarFilter(int noOfStars) {
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+	removeWidgets();
+	cleanupWidgets();
+	model->setStarFilter(noOfStars);
+	model->dirUpdate();
+	createWidgets();
+	updateView();
+	QApplication::restoreOverrideCursor();
+}
+
 void ImageBrowserView::resizeUpdate() {
 	removeWidgets();
 	updateView();

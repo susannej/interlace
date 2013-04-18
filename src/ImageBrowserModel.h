@@ -18,6 +18,7 @@ class ImageBrowserModel
 		
 		void dirSelected(QString directoryName);
 		void dirUpdate();
+		void setStarFilter(int);
 		int readdir();
 		int getNoOfFiles();
 		QString getFileName(int i);
@@ -36,6 +37,7 @@ class ImageBrowserModel
 		QDir photoNinjaDirectory;
 		QFileInfoList files;
 		bool photoNinjaExists;
+		int starFilter;
 
 		int getImageOrientation(int i);
 };

@@ -28,6 +28,18 @@ MainView::MainView(QWidget *parent) {
 	refresh->setIcon(QIcon(":/images/refresh.png"));
 	QToolBar *topBar = new QToolBar;
 	topBar->addWidget(refresh);
+
+	topBar->addSeparator();
+
+	starFilter = new QComboBox();
+	starFilter->addItem(QIcon(":/images/0star.png"), "");
+	starFilter->addItem(QIcon(":/images/1star.png"), "");
+	starFilter->addItem(QIcon(":/images/2star.png"), "");
+	starFilter->addItem(QIcon(":/images/3star.png"), "");
+	starFilter->addItem(QIcon(":/images/4star.png"), "");
+	starFilter->addItem(QIcon(":/images/5star.png"), "");
+	starFilter->setIconSize(QSize(106, 16));
+	topBar->addWidget(starFilter);
 	
 	ImageBrowserScrollArea *scrollArea = new ImageBrowserScrollArea;
 	scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -57,6 +69,7 @@ MainView::MainView(QWidget *parent) {
 
 	connect(browser, SIGNAL(progressValueChanged(int)), dirProgress, SLOT(setValue(int)));
 	connect(refresh, SIGNAL(clicked()), browser, SLOT(dirUpdate()));
+	connect(starFilter, SIGNAL(currentIndexChanged(int)), browser, SLOT(setStarFilter(int)));
 	connect(ctrl, SIGNAL(clicked(bool)), browser, SLOT(toggleSelectionMode(bool)));
 	connect(turnLeft, SIGNAL(clicked()), browser, SLOT(rotateSelectionLeft()));
 	connect(turnRight, SIGNAL(clicked()), browser, SLOT(rotateSelectionRight()));
@@ -69,5 +82,3 @@ MainView::MainView(QWidget *parent) {
 void MainView::dirSelected(QString directoryName) {
 	browser->dirSelected(directoryName);
 }
-
-

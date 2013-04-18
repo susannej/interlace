@@ -29,6 +29,7 @@ class ImageBrowserView : public QWidget
 	public slots:
 		void addWidget2View(QWidget *image, int i);
 		void dirUpdate();
+		void setStarFilter(int);
 		void rotateSelectionLeft();
 		void rotateSelectionRight();
 		void deleteSelection();

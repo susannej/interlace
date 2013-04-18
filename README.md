@@ -8,6 +8,9 @@ To compile the sourcecode, you currently need the following software-packages:
 
 The sourcecode is currently developed under linux, but hopefully, on a later stable day, there will be a windows and mac-version, too.
 
+To create the system-dependend makefiles, please type:  
+"qmake" on unix-based systems and "qmake -t vcapp" for Windows Visual C++ based systems  
+
 Examples for the configuration-files:
 
 ## Windows:

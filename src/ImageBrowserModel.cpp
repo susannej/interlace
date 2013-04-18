@@ -8,6 +8,7 @@
 ImageBrowserModel::ImageBrowserModel(ImageBrowserView *view) {
 	this->view = view;
 	photoNinjaExists = false;
+	starFilter = 0;
 }
 
 void ImageBrowserModel::dirSelected(QString directoryName) {
@@ -32,6 +33,10 @@ void ImageBrowserModel::dirUpdate() {
 	readdir();
 }
 
+void ImageBrowserModel::setStarFilter(int value) {
+	starFilter = value;
+}
+
 int ImageBrowserModel::readdir() {
 	QStringList fileExt;
 	fileExt << "*.cr2" << "*.crw" << "*.mrw" << "*.dng" << "*.nef" << "*.pef" << "*.arw" << "*.rw2" << "*.sr2" << "*.srw" << "*.orf" << "*.pgf" << "*.raf";
@@ -39,6 +44,14 @@ int ImageBrowserModel::readdir() {
 	files = currentDirectory.entryInfoList(fileExt, QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
 
 printf("Directory enthaelt %d images\n", files.size());
+
+	if (starFilter > 0) {
+		for (int i = files.length() -1; i >= 0; i--) {
+			if (getRating(i) < starFilter) {
+				files.removeAt(i);
+			}
+		}
+	}
 
 	return files.size();
 }
