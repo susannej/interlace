@@ -19,8 +19,10 @@ class ImageWidget : public QWidget
 		void setName(QString name);
 		void setAbsoluteName(QString absoluteName);
 		void setRating(int rating);
+		void setLabel(QString label);
 		void setSize(int width, int height);
 		void updateRating(int rating);
+		void updateLabel(QString label);
 		void setSelected(bool sel);
 		bool isSelected();
 
@@ -36,12 +38,14 @@ class ImageWidget : public QWidget
 
 	private:
 		bool selected;
+		QString m_label;
 
 		QString imageAbsoluteName;
 		QString imageName;
 		QGridLayout *widgetLayout;
 
 		RatingWidget *ratingWidget;
+		QWidget *colorLabel;
 		QLabel *imageLabel;
 		QLabel *nameLabel;
 };

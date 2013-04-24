@@ -13,8 +13,27 @@ ImageWidget::ImageWidget() {
 
 	ratingWidget = new RatingWidget();
 	widgetLayout->addWidget(ratingWidget, 0, 0, Qt::AlignCenter);
+	
+	// ENTWEDER
+	/*
 	imageLabel = new QLabel();
 	widgetLayout->addWidget(imageLabel, 1, 0, Qt::AlignCenter);
+	*/
+	// ODER
+	
+	m_label = QString();
+	colorLabel = new QWidget();
+	QGridLayout *l = new QGridLayout();
+	colorLabel->setLayout(l);
+	//colorLabel->setStyleSheet("background-color: #F00");
+	//colorLabel->setStyleSheet("background-color: Red");
+	colorLabel->setStyleSheet("background-color: #555");
+	widgetLayout->addWidget(colorLabel, 1, 0, Qt::AlignCenter);
+	imageLabel = new QLabel();
+	l->addWidget(imageLabel, 1, 1, Qt::AlignCenter);
+	
+	// ENTWEDER ODER ENDE
+
 	nameLabel = new QLabel();
 	widgetLayout->addWidget(nameLabel, 2, 0, Qt::AlignCenter);
 
@@ -46,6 +65,25 @@ void ImageWidget::setRating(int rating) {
 	ratingWidget->setRating(rating);
 }
 
+void ImageWidget::setLabel(QString label) {
+	m_label = label;
+	InterlaceConfig *conf = InterlaceConfig::getInstance();
+	QString color = conf->getLabelColor(label);
+	if (color.size() > 0) {
+		colorLabel->setStyleSheet("background-color: " + color);
+	} else {
+		if (selected)
+			colorLabel->setStyleSheet("background-color: #FFA02F");
+		else
+			colorLabel->setStyleSheet("background-color: #555");
+	}
+}
+
+void ImageWidget::updateLabel(QString label) {
+	setLabel(label);
+	((ImageBrowserView*) parent())->updateLabel(imageName, label);
+}
+
 void ImageWidget::updateRating(int rating) {
 	((ImageBrowserView*) parent())->updateRating(imageName, rating);
 }
@@ -58,9 +96,15 @@ void ImageWidget::setSelected(bool sel) {
 	if (sel) {
 		setStyleSheet("background-color: #FFA02F; color: #000000");
 		selected = true;
+		if (m_label.size() == 0) {
+			colorLabel->setStyleSheet("background-color: #FFA02F");
+		}
 	} else {
 		setStyleSheet("background-color: #555");
 		selected = false;
+		if (m_label.length() == 0) {
+			colorLabel->setStyleSheet("background-color: #555");
+		}
 	}
 	update();
 }
@@ -112,25 +156,45 @@ void ImageWidget::contextMenuEvent(QContextMenuEvent *event) {
     QMenu menu(this);
 	connect(&menu, SIGNAL(triggered(QAction*)), this, SLOT(execPrg(QAction*)));
 	for (int i = 0; i < conf->getConfProgramms(); i++) {
-		QAction *prg = new QAction(QString::number(i+1) + " Öffnen in " + conf->getPrgDesc(i), this);
+		QAction *prg = new QAction(QString::number(i+1) + " Open with " + conf->getPrgDesc(i), this);
 		menu.addAction(prg);
 	}
-     menu.exec(event->globalPos());
+
+	menu.addSeparator();
+	
+	QAction *labelNone = new QAction(conf->getIcon4Color("None"), "Set label to None", this);
+	menu.addAction(labelNone);
+	for (int i = 0; i < conf->getConfLabels(); i++) {
+		QAction *label = new QAction(conf->getIcon4Color(conf->getLabelDesc(i)), "Set label to " + conf->getLabelDesc(i), this);
+		menu.addAction(label);
+	}
+	menu.exec(event->globalPos());
  }
 
 void ImageWidget::execPrg(QAction *action) {
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	QString actionText = action->text();
-	int space = actionText.indexOf(" ");
-	int no = actionText.left(space).toInt() -1;
 
-	InterlaceConfig* conf = InterlaceConfig::getInstance();
+	if (actionText.startsWith("Set label")) {
+		int no = sizeof("Set label to ");
+		QString labelText = actionText.mid(no -1);
+		if (labelText == "None")
+			updateLabel("");
+		else 
+			updateLabel(labelText);
+qDebug() << "Setting label to " + labelText;
+	} else {
+		int space = actionText.indexOf(" ");
+		int no = actionText.left(space).toInt() -1;
 
-	QProcess *proc = new QProcess();
-	connect(proc, SIGNAL( finished ( int , QProcess::ExitStatus)), proc, SLOT(deleteLater()));
-	proc->start(conf->getPrgCommand(no), QStringList() << QDir::toNativeSeparators(imageAbsoluteName));
-	proc->waitForStarted(-1);
+		InterlaceConfig* conf = InterlaceConfig::getInstance();
+
+		QProcess *proc = new QProcess();
+		connect(proc, SIGNAL( finished ( int , QProcess::ExitStatus)), proc, SLOT(deleteLater()));
+		proc->start(conf->getPrgCommand(no), QStringList() << QDir::toNativeSeparators(imageAbsoluteName));
+		proc->waitForStarted(-1);
+	}
 
 	QApplication::restoreOverrideCursor();
 }

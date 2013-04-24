@@ -3,6 +3,7 @@
 #include "SourceTabView.h"
 #include "ImageBrowserScrollArea.h"
 #include "ImageBrowserView.h"
+#include "InterlaceConfig.h"
 
 MainView::MainView(QWidget *parent) {
 	this->parent = parent;
@@ -40,6 +41,17 @@ MainView::MainView(QWidget *parent) {
 	starFilter->addItem(QIcon(":/images/5star.png"), "");
 	starFilter->setIconSize(QSize(106, 16));
 	topBar->addWidget(starFilter);
+
+	topBar->addSeparator();
+
+	colorFilter = new QComboBox();
+	InterlaceConfig *conf = InterlaceConfig::getInstance();
+	colorFilter->addItem(conf->getIcon4Color("None"), "None label");
+	for (int i = 0; i < conf->getConfLabels(); i++) {
+		QString label = conf->getLabelDesc(i);
+		colorFilter->addItem(conf->getIcon4Color(label), label + " label");
+	}
+	topBar->addWidget(colorFilter);
 	
 	ImageBrowserScrollArea *scrollArea = new ImageBrowserScrollArea;
 	scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -70,6 +82,7 @@ MainView::MainView(QWidget *parent) {
 	connect(browser, SIGNAL(progressValueChanged(int)), dirProgress, SLOT(setValue(int)));
 	connect(refresh, SIGNAL(clicked()), browser, SLOT(dirUpdate()));
 	connect(starFilter, SIGNAL(currentIndexChanged(int)), browser, SLOT(setStarFilter(int)));
+	connect(colorFilter, SIGNAL(currentIndexChanged(int)), browser, SLOT(setColorFilter(int)));
 	connect(ctrl, SIGNAL(clicked(bool)), browser, SLOT(toggleSelectionMode(bool)));
 	connect(turnLeft, SIGNAL(clicked()), browser, SLOT(rotateSelectionLeft()));
 	connect(turnRight, SIGNAL(clicked()), browser, SLOT(rotateSelectionRight()));

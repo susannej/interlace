@@ -6,6 +6,8 @@ InterlaceConfig::InterlaceConfig() {
 	imageSize = 200;
 	prgDesc = new QStringList();
 	prgCommand = new QStringList();
+	labelDesc = new QStringList();
+	labelColor = new QStringList();
 }
 
 InterlaceConfig::~InterlaceConfig() {
@@ -52,6 +54,12 @@ void InterlaceConfig::read() {
 			} else if (line.startsWith("ImageSize")) {
 				QStringList list1 = line.split("=");
 				imageSize = list1.at(1).toInt();
+			} else if (line.startsWith("Label")) {
+				QStringList list1 = line.split("=");
+				QStringList list2 = list1.at(1).split(";");
+
+				setLabelDesc(list2.at(0));
+				setLabelColor(list2.at(1));
 			}
 			
 			qDebug()<<line;
@@ -70,4 +78,36 @@ void InterlaceConfig::setPrgCommand(QString command) {
 
 int InterlaceConfig::getImageSize() {
 	return imageSize;
+}
+
+int InterlaceConfig::getConfLabels() {
+	return labelDesc->size();
+}
+
+QString InterlaceConfig::getLabelColor(QString label) {
+	for (int i = 0; i < labelDesc->size(); i++) {
+		if (labelDesc->at(i) == label) {
+			return labelColor->at(i);
+		}
+	}
+	return "";
+}
+
+void InterlaceConfig::setLabelDesc(QString desc) {
+	labelDesc->append(desc);
+}
+
+void InterlaceConfig::setLabelColor(QString color) {
+	labelColor->append(color);
+}
+
+QString InterlaceConfig::getLabelDesc(int no) {
+	return labelDesc->at(no);
+}
+
+QIcon InterlaceConfig::getIcon4Color(QString label) {
+	QPixmap pixmap(16, 16);
+	if (label != "None")
+		pixmap.fill(QColor(label));
+	return QIcon(pixmap);
 }

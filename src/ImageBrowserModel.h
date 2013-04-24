@@ -19,6 +19,7 @@ class ImageBrowserModel
 		void dirSelected(QString directoryName);
 		void dirUpdate();
 		void setStarFilter(int);
+		void setColorFilter(QString);
 		int readdir();
 		int getNoOfFiles();
 		QString getFileName(int i);
@@ -27,6 +28,9 @@ class ImageBrowserModel
 		int getRating(int i);
 		void updateRating(int i, int rating);
 		void updateRating(QString name, int rating);
+		QString getLabel(int i);
+		void updateLabel(int i, QString label);
+		void updateLabel(QString name, QString label);
 		void rotateImage(int i, Rotation direction);
 		void deleteImage(int i);
 
@@ -38,6 +42,7 @@ class ImageBrowserModel
 		QFileInfoList files;
 		bool photoNinjaExists;
 		int starFilter;
+		QString colorFilter;
 
 		int getImageOrientation(int i);
 };

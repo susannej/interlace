@@ -37,6 +37,10 @@ void ImageBrowserModel::setStarFilter(int value) {
 	starFilter = value;
 }
 
+void ImageBrowserModel::setColorFilter(QString label) {
+	colorFilter = label;
+}
+
 int ImageBrowserModel::readdir() {
 	QStringList fileExt;
 	fileExt << "*.cr2" << "*.crw" << "*.mrw" << "*.dng" << "*.nef" << "*.pef" << "*.arw" << "*.rw2" << "*.sr2" << "*.srw" << "*.orf" << "*.pgf" << "*.raf";
@@ -48,6 +52,13 @@ printf("Directory enthaelt %d images\n", files.size());
 	if (starFilter > 0) {
 		for (int i = files.length() -1; i >= 0; i--) {
 			if (getRating(i) < starFilter) {
+				files.removeAt(i);
+			}
+		}
+	}
+	if (colorFilter.size() > 0) {
+		for (int i = files.length() -1; i >= 0; i--) {
+			if (getLabel(i) != colorFilter) {
 				files.removeAt(i);
 			}
 		}
@@ -267,6 +278,111 @@ void ImageBrowserModel::updateRating(QString name, int rating) {
 		i++;
 	}
 	updateRating(i, rating);
+}
+
+QString ImageBrowserModel::getLabel(int index) {
+	QString label = "";
+	QString absoluteFilename = files.at(index).absoluteFilePath();
+qDebug() << "Bearbeitung für Image: " + absoluteFilename;
+	try {
+		// Read the Metadata to get later at least the orientation...
+		Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
+		image->readMetadata();
+		Exiv2::XmpData xmpData = image->xmpData();
+		Exiv2::Xmpdatum xmpDatum = xmpData["Xmp.xmp.Label"];
+		label = QString::fromStdString(xmpDatum.toString());
+
+		// XMP's are only created for RAW-files, other files do have their information embedded in the image!
+		if (!absoluteFilename.endsWith(".jpg", Qt::CaseInsensitive)
+			&& !absoluteFilename.endsWith(".tiff", Qt::CaseInsensitive)
+			&& !absoluteFilename.endsWith(".png", Qt::CaseInsensitive)
+			&& !absoluteFilename.endsWith(".tif", Qt::CaseInsensitive)
+			&& !absoluteFilename.endsWith(".jpeg", Qt::CaseInsensitive)) {
+			
+			QString xmpFile = absoluteFilename.replace(absoluteFilename.size() -3, 3, "xmp");
+			if (currentDirectory.exists(xmpFile)) {
+				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toAscii().data());
+				xmpImage->readMetadata();
+				Exiv2::XmpData xmpXmpData = xmpImage->xmpData();
+				Exiv2::Xmpdatum xmpXmpDatum = xmpXmpData["Xmp.xmp.Label"];
+				label = QString::fromStdString(xmpXmpDatum.toString());
+				/*
+				int xmpRating = (int) xmpXmpDatum.toLong();
+				if (xmpRating != -1) {
+					rating = xmpRating;
+				}
+				*/
+			}
+		}
+
+	} catch (Exiv2::AnyError& e) {
+		std::cout << "Caught Exiv2 exception '" << e << "'\n";
+	}
+
+qDebug() << "xmp.Label = " + label + " für Image: " + absoluteFilename;
+
+	/*
+	if (rating < 0) rating = 0;
+	return rating;
+	*/
+	return label;
+}
+
+void ImageBrowserModel::updateLabel(int i, QString label) {
+	try {
+		QString absoluteFilename = files.at(i).absoluteFilePath();
+
+
+		// XMP's are only created for RAW-files, other files do have their information embedded in the image!
+		if (absoluteFilename.endsWith(".jpg", Qt::CaseInsensitive)
+			|| absoluteFilename.endsWith(".tiff", Qt::CaseInsensitive)
+			|| absoluteFilename.endsWith(".png", Qt::CaseInsensitive)
+			|| absoluteFilename.endsWith(".tif", Qt::CaseInsensitive)
+			|| absoluteFilename.endsWith(".jpeg", Qt::CaseInsensitive)) {
+
+			// Read the Metadata to get later at least the orientation...
+			Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
+			image->readMetadata();
+			Exiv2::XmpData xmpData = image->xmpData();
+			xmpData["Xmp.xmp.Label"] = label.toStdString();
+			image->setXmpData(xmpData);
+			image->writeMetadata();
+
+		} else {
+
+			QString xmpFile = absoluteFilename.replace(absoluteFilename.size() -3, 3, "xmp");
+			if (currentDirectory.exists(xmpFile)) {
+
+				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toAscii().data());
+				xmpImage->readMetadata();
+				Exiv2::XmpData xmpXmpData = xmpImage->xmpData();
+				xmpXmpData["Xmp.xmp.Label"] = label.toStdString();
+
+				xmpImage->setXmpData(xmpXmpData);
+				xmpImage->writeMetadata();
+			} else {
+				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, xmpFile.toAscii().data());
+				Exiv2::XmpData xmpData;
+				Exiv2::XmpProperties::registerNs("http://ns.adobe.com/xap/1.0/", "xmp");
+				xmpData["Xmp.xmp.Label"] = label.toStdString();
+				
+				xmpImage->setXmpData(xmpData);
+				xmpImage->writeMetadata();
+
+			}
+		}
+
+	} catch (Exiv2::AnyError& e) {
+		std::cout << "Caught Exiv2 exception '" << e << "'\n";
+	}
+}
+
+void ImageBrowserModel::updateLabel(QString name, QString label) {
+	int i = 0;
+	while (i < files.size() && name != files.at(i).fileName()) {
+		i++;
+	}
+	updateLabel(i, label);
 }
 
 void ImageBrowserModel::rotateImage(int i, Rotation direction) {

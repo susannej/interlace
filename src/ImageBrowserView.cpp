@@ -52,6 +52,23 @@ void ImageBrowserView::setStarFilter(int noOfStars) {
 	QApplication::restoreOverrideCursor();
 }
 
+void ImageBrowserView::setColorFilter(int selection) {
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+	InterlaceConfig *conf = InterlaceConfig::getInstance();
+	removeWidgets();
+	cleanupWidgets();
+	if (selection > 0) {
+		QString label = conf->getLabelDesc(selection -1);
+		model->setColorFilter(label);
+	} else {
+		model->setColorFilter("");
+	}
+	model->dirUpdate();
+	createWidgets();
+	updateView();
+	QApplication::restoreOverrideCursor();
+}
+
 void ImageBrowserView::resizeUpdate() {
 	removeWidgets();
 	updateView();
@@ -140,6 +157,7 @@ QWidget* ImageBrowserView::createImage(int i) {
 	InterlaceConfig *conf = InterlaceConfig::getInstance();
 	imageWidget->setAbsoluteName(model->getAbsoluteFileName(i));
 	imageWidget->setRating(model->getRating(i));
+	imageWidget->setLabel(model->getLabel(i));
 	imageWidget->setImage(model->getImage(i, conf->getImageSize() - 50));
 	imageWidget->setName(model->getFileName(i));
 	imageWidget->setSize(conf->getImageSize(), conf->getImageSize());
@@ -149,6 +167,10 @@ QWidget* ImageBrowserView::createImage(int i) {
 
 void ImageBrowserView::updateRating(QString name, int rating) {
 	model->updateRating(name, rating);
+}
+
+void ImageBrowserView::updateLabel(QString name, QString label) {
+	model->updateLabel(name, label);
 }
 
 void ImageBrowserView::rotateSelectionLeft() {

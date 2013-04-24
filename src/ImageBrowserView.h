@@ -22,6 +22,7 @@ class ImageBrowserView : public QWidget
 		void createWidgets();
 		QWidget* createImage(int i);
 		void updateRating(QString name, int rating);
+		void updateLabel(QString name, QString label);
 		void clearSelection();
 		bool isCtrlButtonPressed();
 		int getNoOfSelectedImages();
@@ -30,6 +31,7 @@ class ImageBrowserView : public QWidget
 		void addWidget2View(QWidget *image, int i);
 		void dirUpdate();
 		void setStarFilter(int);
+		void setColorFilter(int);
 		void rotateSelectionLeft();
 		void rotateSelectionRight();
 		void deleteSelection();

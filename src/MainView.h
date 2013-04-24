@@ -28,6 +28,7 @@ class MainView : public QSplitter
 		ImageBrowserView *browser;
 
 		QComboBox *starFilter;
+		QComboBox *colorFilter;
 };
 
 #endif
