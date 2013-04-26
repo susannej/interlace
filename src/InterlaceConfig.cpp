@@ -93,6 +93,19 @@ QString InterlaceConfig::getLabelColor(QString label) {
 	return "";
 }
 
+QString InterlaceConfig::getLabelColor(int no) {
+	return labelColor->at(no);
+}
+
+int InterlaceConfig::getLabelIndex(QString label) {
+	for (int i = 0; i < labelDesc->size(); i++) {
+		if (labelDesc->at(i) == label) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 void InterlaceConfig::setLabelDesc(QString desc) {
 	labelDesc->append(desc);
 }

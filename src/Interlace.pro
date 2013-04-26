@@ -36,7 +36,8 @@ HEADERS += Interlace.h \
 	ImageBrowserModel.h \
 	ImageWidget.h \
 	RatingWidget.h \
-	InterlaceConfig.h
+	InterlaceConfig.h \
+	MagnifierDialog.h
 
 SOURCES += Interlace.cpp \
 	MainView.cpp \
@@ -46,4 +47,5 @@ SOURCES += Interlace.cpp \
 	ImageBrowserModel.cpp \
 	ImageWidget.cpp \
 	RatingWidget.cpp \
-	InterlaceConfig.cpp
+	InterlaceConfig.cpp \
+	MagnifierDialog.cpp

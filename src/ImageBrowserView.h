@@ -32,6 +32,7 @@ class ImageBrowserView : public QWidget
 		void dirUpdate();
 		void setStarFilter(int);
 		void setColorFilter(int);
+		void magnifier();
 		void rotateSelectionLeft();
 		void rotateSelectionRight();
 		void deleteSelection();

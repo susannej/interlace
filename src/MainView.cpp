@@ -52,6 +52,12 @@ MainView::MainView(QWidget *parent) {
 		colorFilter->addItem(conf->getIcon4Color(label), label + " label");
 	}
 	topBar->addWidget(colorFilter);
+
+	topBar->addSeparator();
+
+	QToolButton *magnifier = new QToolButton;
+	magnifier->setIcon(QIcon(":/images/magnifier.png"));
+	topBar->addWidget(magnifier);
 	
 	ImageBrowserScrollArea *scrollArea = new ImageBrowserScrollArea;
 	scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -87,6 +93,7 @@ MainView::MainView(QWidget *parent) {
 	connect(turnLeft, SIGNAL(clicked()), browser, SLOT(rotateSelectionLeft()));
 	connect(turnRight, SIGNAL(clicked()), browser, SLOT(rotateSelectionRight()));
 	connect(deleteSelection, SIGNAL(clicked()), browser, SLOT(deleteSelection()));
+	connect(magnifier, SIGNAL(clicked()), browser, SLOT(magnifier()));
 
 	addWidget(leftView);
 	addWidget(midView);

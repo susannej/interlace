@@ -16,6 +16,8 @@ class InterlaceConfig
 		int getImageSize();
 		int getConfLabels();
 		QString getLabelColor(QString label);
+		QString getLabelColor(int no);
+		int getLabelIndex(QString label);
 		QString getLabelDesc(int no);
 		QIcon getIcon4Color(QString label);
 		

@@ -18,5 +18,6 @@
     <file>images/3star.png</file>
     <file>images/4star.png</file>
     <file>images/5star.png</file>
+	<file>images/magnifier.png</file>
   </qresource>
 </RCC>
