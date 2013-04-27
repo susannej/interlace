@@ -63,18 +63,18 @@ qDebug() << "Vor selected Schleife!";
 	}
 qDebug() << "nach selected Schleife!";
 
-	MagnifierDialog dialog = new MagnifierDialog(this);
-	dialog.setModel(model);
+	MagnifierDialog *dialog = new MagnifierDialog(this);
+	dialog->setModel(model);
 qDebug() << "dialog-Aufruf!";
 	if (images->size() > 1) {
-		dialog.setImages(images);
+		dialog->setImages(images);
 	} else if (images->size() == 1) {
-		dialog.setStartImage(images->at(0));
+		dialog->setStartImage(images->at(0));
 	} else {
 qDebug() << "setStartImage(0)";
-		dialog.setStartImage(0);
+		dialog->setStartImage(0);
 	}
-	dialog.exec();
+	dialog->exec();
 
 	// FIXME: Erst wenn dirUpdate() ein Aktualisieren des Directories erkennen kann!
 	//dirUpdate();

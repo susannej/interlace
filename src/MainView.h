@@ -13,7 +13,7 @@ class MainView : public QSplitter
 	Q_OBJECT
 
 	public:
-		MainView(QWidget *parent);
+		MainView(QWidget *parent = 0);
 		void dirSelected(QString directoryName);
 
 	private:
