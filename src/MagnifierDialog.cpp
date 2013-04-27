@@ -71,40 +71,56 @@ void MagnifierDialog::keyPressEvent(QKeyEvent *event) {
 		close();
 		break;
 	case Qt::Key_Up:
-		if (imageNos != NULL) {
-			i = conf->getLabelIndex(m_model->getLabel(imageNos->at(currentImage)));
+		if (event->modifiers() & Qt::ControlModifier) {
+			int rating = ratingWidget->getRating();
+			rating = rating +1;
+			if (rating > 5) rating = 5;
+			updateRating(rating);
+			ratingWidget->setRating(rating);
 		} else {
-			i = conf->getLabelIndex(m_model->getLabel(currentImage));
+			if (imageNos != NULL) {
+				i = conf->getLabelIndex(m_model->getLabel(imageNos->at(currentImage)));
+			} else {
+				i = conf->getLabelIndex(m_model->getLabel(currentImage));
+			}
+			i = i -1;
+			if (i <= -1) {
+				i = -1;
+				colorLabel->setStyleSheet("background-color: #000");
+				if (imageNos != NULL) 
+					m_model->updateLabel(imageNos->at(currentImage), "");
+				else 
+					m_model->updateLabel(currentImage, "");
+			} else {
+				colorLabel->setStyleSheet("background-color: " + conf->getLabelColor(i));
+				if (imageNos != NULL) 
+					m_model->updateLabel(imageNos->at(currentImage), conf->getLabelDesc(i));
+				else 
+					m_model->updateLabel(currentImage, conf->getLabelDesc(i));
+			}
 		}
-		i = i -1;
-		if (i <= -1) {
-			i = -1;
-			colorLabel->setStyleSheet("background-color: #000");
-			if (imageNos != NULL) 
-				m_model->updateLabel(imageNos->at(currentImage), "");
-			else 
-				m_model->updateLabel(currentImage, "");
+		break;
+	case Qt::Key_Down:
+		if (event->modifiers() & Qt::ControlModifier) {
+			int rating = ratingWidget->getRating();
+			rating = rating -1;
+			if (rating < 0) rating = 0;
+			updateRating(rating);
+			ratingWidget->setRating(rating);
 		} else {
+			if (imageNos != NULL) {
+				i = conf->getLabelIndex(m_model->getLabel(imageNos->at(currentImage)));
+			} else {
+				i = conf->getLabelIndex(m_model->getLabel(currentImage));
+			}
+			i = i +1;
+			if (i >= conf->getConfLabels()) i = conf->getConfLabels() -1;
 			colorLabel->setStyleSheet("background-color: " + conf->getLabelColor(i));
 			if (imageNos != NULL) 
 				m_model->updateLabel(imageNos->at(currentImage), conf->getLabelDesc(i));
 			else 
 				m_model->updateLabel(currentImage, conf->getLabelDesc(i));
 		}
-		break;
-	case Qt::Key_Down:
-		if (imageNos != NULL) {
-			i = conf->getLabelIndex(m_model->getLabel(imageNos->at(currentImage)));
-		} else {
-			i = conf->getLabelIndex(m_model->getLabel(currentImage));
-		}
-		i = i +1;
-		if (i >= conf->getConfLabels()) i = conf->getConfLabels() -1;
-		colorLabel->setStyleSheet("background-color: " + conf->getLabelColor(i));
-		if (imageNos != NULL) 
-			m_model->updateLabel(imageNos->at(currentImage), conf->getLabelDesc(i));
-		else 
-			m_model->updateLabel(currentImage, conf->getLabelDesc(i));
 		break;
 	case Qt::Key_Left:
 		currentImage = currentImage -1;

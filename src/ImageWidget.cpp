@@ -14,13 +14,6 @@ ImageWidget::ImageWidget() {
 	ratingWidget = new RatingWidget();
 	widgetLayout->addWidget(ratingWidget, 0, 0, Qt::AlignCenter);
 	
-	// ENTWEDER
-	/*
-	imageLabel = new QLabel();
-	widgetLayout->addWidget(imageLabel, 1, 0, Qt::AlignCenter);
-	*/
-	// ODER
-	
 	m_label = QString();
 	colorLabel = new QWidget();
 	QGridLayout *l = new QGridLayout();
@@ -32,8 +25,6 @@ ImageWidget::ImageWidget() {
 	imageLabel = new QLabel();
 	l->addWidget(imageLabel, 1, 1, Qt::AlignCenter);
 	
-	// ENTWEDER ODER ENDE
-
 	nameLabel = new QLabel();
 	widgetLayout->addWidget(nameLabel, 2, 0, Qt::AlignCenter);
 
@@ -46,6 +37,7 @@ ImageWidget::~ImageWidget() {
 	delete imageLabel;
 	delete ratingWidget;
 	delete widgetLayout;
+	delete colorLabel;
 }
 
 void ImageWidget::setImage(QImage image) {
@@ -137,7 +129,8 @@ void ImageWidget::mouseDoubleClickEvent(QMouseEvent *event) {
 
 	QProcess *proc = new QProcess();
 	connect(proc, SIGNAL( finished ( int , QProcess::ExitStatus)), proc, SLOT(deleteLater()));
-	proc->start(conf->getPrgCommand(0), QStringList() << QDir::toNativeSeparators(imageAbsoluteName));
+qDebug() << QDir::toNativeSeparators(imageAbsoluteName);
+	proc->start(conf->getPrgCommand(0) + /*, QStringList() <<*/ "\"" + QDir::toNativeSeparators(imageAbsoluteName) + "\"");
 	proc->waitForStarted(-1);
 
 	//system(("wine /home/joe/.wine/drive_c/windows/command/start.exe /Unix /home/joe/.wine/drive_c/Programme/PictureCode/PhotoNinja/PhotoNinja32.exe z:\"" + imageAbsoluteName + "\"").toAscii().data());
