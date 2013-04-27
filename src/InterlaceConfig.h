@@ -29,6 +29,7 @@ class InterlaceConfig
 		QStringList *prgCommand;
 		QStringList *labelDesc;
 		QStringList *labelColor;
+		QVector<QIcon> *labelIcons;
 
 		InterlaceConfig();
 		void read();

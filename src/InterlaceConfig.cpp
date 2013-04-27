@@ -8,6 +8,10 @@ InterlaceConfig::InterlaceConfig() {
 	prgCommand = new QStringList();
 	labelDesc = new QStringList();
 	labelColor = new QStringList();
+	labelIcons = new QVector<QIcon>();
+	QPixmap pixmap(16, 16);
+	pixmap.fill(Qt::transparent);
+	labelIcons->append(pixmap);
 }
 
 InterlaceConfig::~InterlaceConfig() {
@@ -60,6 +64,10 @@ void InterlaceConfig::read() {
 
 				setLabelDesc(list2.at(0));
 				setLabelColor(list2.at(1));
+
+				QPixmap pixmap(16, 16);
+				pixmap.fill(QColor(list2.at(1)));
+				labelIcons->append(pixmap);
 			}
 			
 			qDebug()<<line;
@@ -119,8 +127,5 @@ QString InterlaceConfig::getLabelDesc(int no) {
 }
 
 QIcon InterlaceConfig::getIcon4Color(QString label) {
-	QPixmap pixmap(16, 16);
-	if (label != "None")
-		pixmap.fill(QColor(label));
-	return QIcon(pixmap);
+	return labelIcons->at(getLabelIndex(label) +1);
 }

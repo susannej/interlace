@@ -185,7 +185,7 @@ qDebug() << "Setting label to " + labelText;
 
 		QProcess *proc = new QProcess();
 		connect(proc, SIGNAL( finished ( int , QProcess::ExitStatus)), proc, SLOT(deleteLater()));
-		proc->start(conf->getPrgCommand(no), QStringList() << QDir::toNativeSeparators(imageAbsoluteName));
+		proc->start(conf->getPrgCommand(no) + /*, QStringList() <<*/ "\"" + QDir::toNativeSeparators(imageAbsoluteName) + "\"");
 		proc->waitForStarted(-1);
 	}
 
