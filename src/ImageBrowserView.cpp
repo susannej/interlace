@@ -54,30 +54,28 @@ void ImageBrowserView::setStarFilter(int noOfStars) {
 }
 
 void ImageBrowserView::magnifier() {
-qDebug() << "Vor selected Schleife!";
-	QVector<int> *images = new QVector<int>();
-	for (int i = 0; i < vector.size(); i++) {
-		if (((ImageWidget*) vector[i])->isSelected()) {
-			images->append(i);
+	if (model->getNoOfFiles() > 0) {
+		QVector<int> *images = new QVector<int>();
+		for (int i = 0; i < vector.size(); i++) {
+			if (((ImageWidget*) vector[i])->isSelected()) {
+				images->append(i);
+			}
 		}
-	}
-qDebug() << "nach selected Schleife!";
 
-	MagnifierDialog *dialog = new MagnifierDialog(this);
-	dialog->setModel(model);
-qDebug() << "dialog-Aufruf!";
-	if (images->size() > 1) {
-		dialog->setImages(images);
-	} else if (images->size() == 1) {
-		dialog->setStartImage(images->at(0));
-	} else {
-qDebug() << "setStartImage(0)";
-		dialog->setStartImage(0);
-	}
-	dialog->exec();
+		MagnifierDialog *dialog = new MagnifierDialog(this);
+		dialog->setModel(model);
+		if (images->size() > 1) {
+			dialog->setImages(images);
+		} else if (images->size() == 1) {
+			dialog->setStartImage(images->at(0));
+		} else {
+			dialog->setStartImage(0);
+		}
+		dialog->exec();
 
-	// FIXME: Erst wenn dirUpdate() ein Aktualisieren des Directories erkennen kann!
-	//dirUpdate();
+		// FIXME: Erst wenn dirUpdate() ein Aktualisieren des Directories erkennen kann!
+		//dirUpdate();
+	}
 }
 
 void ImageBrowserView::setColorFilter(int selection) {
