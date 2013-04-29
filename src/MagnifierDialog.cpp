@@ -72,12 +72,6 @@ void MagnifierDialog::keyPressEvent(QKeyEvent *event) {
 		break;
 	case Qt::Key_Up:
 		if (event->modifiers() & Qt::ControlModifier) {
-			int rating = ratingWidget->getRating();
-			rating = rating +1;
-			if (rating > 5) rating = 5;
-			updateRating(rating);
-			ratingWidget->setRating(rating);
-		} else {
 			if (imageNos != NULL) {
 				i = conf->getLabelIndex(m_model->getLabel(imageNos->at(currentImage)));
 			} else {
@@ -98,16 +92,16 @@ void MagnifierDialog::keyPressEvent(QKeyEvent *event) {
 				else 
 					m_model->updateLabel(currentImage, conf->getLabelDesc(i));
 			}
+		} else {
+			int rating = ratingWidget->getRating();
+			rating = rating +1;
+			if (rating > 5) rating = 5;
+			updateRating(rating);
+			ratingWidget->setRating(rating);
 		}
 		break;
 	case Qt::Key_Down:
 		if (event->modifiers() & Qt::ControlModifier) {
-			int rating = ratingWidget->getRating();
-			rating = rating -1;
-			if (rating < 0) rating = 0;
-			updateRating(rating);
-			ratingWidget->setRating(rating);
-		} else {
 			if (imageNos != NULL) {
 				i = conf->getLabelIndex(m_model->getLabel(imageNos->at(currentImage)));
 			} else {
@@ -120,6 +114,12 @@ void MagnifierDialog::keyPressEvent(QKeyEvent *event) {
 				m_model->updateLabel(imageNos->at(currentImage), conf->getLabelDesc(i));
 			else 
 				m_model->updateLabel(currentImage, conf->getLabelDesc(i));
+		} else {
+			int rating = ratingWidget->getRating();
+			rating = rating -1;
+			if (rating < 0) rating = 0;
+			updateRating(rating);
+			ratingWidget->setRating(rating);
 		}
 		break;
 	case Qt::Key_Left:
