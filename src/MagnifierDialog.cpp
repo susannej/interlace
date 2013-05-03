@@ -163,6 +163,74 @@ void MagnifierDialog::resizeEvent(QResizeEvent *event) {
 	setImage();
 }
 
+void MagnifierDialog::mousePressEvent(QMouseEvent *event) {
+	switch (event->button()) {
+	case Qt::LeftButton:
+		currentImage = currentImage +1;
+		setImage();
+		break;
+	case Qt::RightButton:
+		currentImage = currentImage -1;
+		setImage();
+		break;
+	}
+}
+
+void MagnifierDialog::wheelEvent (QWheelEvent * event) {
+	if (event->modifiers() & Qt::ControlModifier) {
+		int i = 0;
+		if (event->delta() > 0) {
+			if (imageNos != NULL) {
+				i = conf->getLabelIndex(m_model->getLabel(imageNos->at(currentImage)));
+			} else {
+				i = conf->getLabelIndex(m_model->getLabel(currentImage));
+			}
+			i = i -1;
+			if (i <= -1) {
+				i = -1;
+				colorLabel->setStyleSheet("background-color: #000");
+				if (imageNos != NULL) 
+					m_model->updateLabel(imageNos->at(currentImage), "");
+				else 
+					m_model->updateLabel(currentImage, "");
+			} else {
+				colorLabel->setStyleSheet("background-color: " + conf->getLabelColor(i));
+				if (imageNos != NULL) 
+					m_model->updateLabel(imageNos->at(currentImage), conf->getLabelDesc(i));
+				else 
+					m_model->updateLabel(currentImage, conf->getLabelDesc(i));
+			}
+		} else {
+			if (imageNos != NULL) {
+				i = conf->getLabelIndex(m_model->getLabel(imageNos->at(currentImage)));
+			} else {
+				i = conf->getLabelIndex(m_model->getLabel(currentImage));
+			}
+			i = i +1;
+			if (i >= conf->getConfLabels()) i = conf->getConfLabels() -1;
+			colorLabel->setStyleSheet("background-color: " + conf->getLabelColor(i));
+			if (imageNos != NULL) 
+				m_model->updateLabel(imageNos->at(currentImage), conf->getLabelDesc(i));
+			else 
+				m_model->updateLabel(currentImage, conf->getLabelDesc(i));
+		}
+	} else {
+		if (event->delta() > 0) {
+			int rating = ratingWidget->getRating();
+			rating = rating +1;
+			if (rating > 5) rating = 5;
+			updateRating(rating);
+			ratingWidget->setRating(rating);
+		} else {
+			int rating = ratingWidget->getRating();
+			rating = rating -1;
+			if (rating < 0) rating = 0;
+			updateRating(rating);
+			ratingWidget->setRating(rating);
+		}
+	}
+}
+
 void MagnifierDialog::setImage() {
 	if (currentImage < 0) currentImage = 0;
 	if (imageNos != NULL) {

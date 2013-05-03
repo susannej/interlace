@@ -21,9 +21,12 @@ class MagnifierDialog : public QDialog
 		void setModel(ImageBrowserModel *model);
 		void setStartImage(int no);
 
+
 	protected:
 		virtual void keyPressEvent(QKeyEvent *event);
 		virtual void resizeEvent(QResizeEvent *event);
+		virtual void mousePressEvent(QMouseEvent *event);
+		virtual void wheelEvent (QWheelEvent * event);
 		
 	private:
 		InterlaceConfig *conf;
