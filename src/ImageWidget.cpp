@@ -123,14 +123,16 @@ void ImageWidget::mouseDoubleClickEvent(QMouseEvent *event) {
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	InterlaceConfig* conf = InterlaceConfig::getInstance();
-	QString command = conf->getPrgCommand(0);
+	QString confCommand = conf->getPrgCommand(0);
+	QString file = QDir::toNativeSeparators(imageAbsoluteName);
+	QString command = confCommand.replace("${file}", file);
 
 	qDebug() << "Aufruf von: " + command;
 
 	QProcess *proc = new QProcess();
 	connect(proc, SIGNAL( finished ( int , QProcess::ExitStatus)), proc, SLOT(deleteLater()));
 qDebug() << QDir::toNativeSeparators(imageAbsoluteName);
-	proc->start(conf->getPrgCommand(0) + /*, QStringList() <<*/ "\"" + QDir::toNativeSeparators(imageAbsoluteName) + "\"");
+	proc->start(command);
 	proc->waitForStarted(-1);
 
 	//system(("wine /home/joe/.wine/drive_c/windows/command/start.exe /Unix /home/joe/.wine/drive_c/Programme/PictureCode/PhotoNinja/PhotoNinja32.exe z:\"" + imageAbsoluteName + "\"").toAscii().data());
@@ -183,9 +185,13 @@ qDebug() << "Setting label to " + labelText;
 
 		InterlaceConfig* conf = InterlaceConfig::getInstance();
 
+		QString confCommand = conf->getPrgCommand(no);
+		QString file = QDir::toNativeSeparators(imageAbsoluteName);
+		QString command = confCommand.replace("${file}", file);
+
 		QProcess *proc = new QProcess();
 		connect(proc, SIGNAL( finished ( int , QProcess::ExitStatus)), proc, SLOT(deleteLater()));
-		proc->start(conf->getPrgCommand(no) + /*, QStringList() <<*/ "\"" + QDir::toNativeSeparators(imageAbsoluteName) + "\"");
+		proc->start(command);
 		proc->waitForStarted(-1);
 	}
 
