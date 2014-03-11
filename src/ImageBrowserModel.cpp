@@ -146,6 +146,7 @@ int ImageBrowserModel::readdir() {
 				files.removeAt(i);
 				fileRatings.removeAt(i);
 				fileLabels.removeAt(i);
+				fileOrientations.removeAt(i);
 			}
 		}
 	}
@@ -155,6 +156,7 @@ int ImageBrowserModel::readdir() {
 				files.removeAt(i);
 				fileRatings.removeAt(i);
 				fileLabels.removeAt(i);
+				fileOrientations.removeAt(i);
 			}
 		}
 	}
