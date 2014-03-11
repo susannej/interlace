@@ -26,9 +26,11 @@ class ImageBrowserModel
 		QString getAbsoluteFileName(int i);
 		QImage getImage(int i, int maxsize);
 		int getRating(int i);
+		int getRatingFromFile(int i);
 		void updateRating(int i, int rating);
 		void updateRating(QString name, int rating);
 		QString getLabel(int i);
+		QString getLabelFromFile(int i);
 		void updateLabel(int i, QString label);
 		void updateLabel(QString name, QString label);
 		void rotateImage(int i, Rotation direction);
@@ -39,12 +41,18 @@ class ImageBrowserModel
 
 		QDir currentDirectory;
 		QDir photoNinjaDirectory;
+
 		QFileInfoList files;
+		QList<int> fileRatings;
+		QList<QString> fileLabels;
+		QList<int> fileOrientations;
+		
 		bool photoNinjaExists;
 		int starFilter;
 		QString colorFilter;
 
 		int getImageOrientation(int i);
+		int getImageOrientationFromFile(int i);
 };
 
 #endif

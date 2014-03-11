@@ -291,3 +291,7 @@ int ImageBrowserView::getNoOfSelectedImages() {
 	}
 	return no;
 }
+
+void ImageBrowserView::updateProgress(int value) {
+	progressValueChanged(value);
+}

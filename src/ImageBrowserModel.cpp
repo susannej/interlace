@@ -45,14 +45,107 @@ int ImageBrowserModel::readdir() {
 	QStringList fileExt;
 	fileExt << "*.cr2" << "*.crw" << "*.mrw" << "*.dng" << "*.nef" << "*.pef" << "*.arw" << "*.rw2" << "*.sr2" << "*.srw" << "*.orf" << "*.pgf" << "*.raf";
 	fileExt << "*.jpg" << "*.jpeg" << "*.tiff" << "*.tif" << "*.png" << "*.gif" << "*.psd" << "*.jp2" << "*.eps" << "*.exv";
+	files.clear();
 	files = currentDirectory.entryInfoList(fileExt, QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
 
-printf("Directory enthaelt %d images\n", files.size());
+	printf("Directory enthaelt %d images\n", files.size());
+
+	int max = getNoOfFiles();
+	int oldProgress = 0;
+	int currentProgress = 0;
+	view->updateProgress(0);
+
+	fileRatings.clear();
+	fileRatings.reserve(files.size());
+	fileLabels.clear();
+	fileLabels.reserve(files.size());
+	fileOrientations.clear();
+	fileOrientations.reserve(files.size());
+
+	for (int i = 0; i < files.size(); i++) {
+		int rating = 0;
+		QString label = "";
+		int orientation = 1;
+		try {
+			QString absoluteFilename = files.at(i).absoluteFilePath();
+
+			// Read the Metadata to get later at least the orientation...
+			Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
+			image->readMetadata();
+			
+			Exiv2::XmpData xmpData = image->xmpData();
+			Exiv2::Xmpdatum xmpDatum = xmpData["Xmp.xmp.Rating"];
+			int tmpRating = (int) xmpDatum.toLong();
+			if (tmpRating != -1) {
+				rating = tmpRating;
+			}
+			xmpDatum = xmpData["Xmp.xmp.Label"];
+			label = QString::fromStdString(xmpDatum.toString());
+
+			Exiv2::ExifData exifData = image->exifData();
+			Exiv2::Exifdatum exifDatum = exifData["Exif.Image.Orientation"];
+			int tmpOrientation = (int) exifDatum.toLong();
+			if (tmpOrientation != -1) {
+				orientation = tmpOrientation;
+			}
+
+			// XMP's are only created for RAW-files, other files do have their information embedded in the image!
+			if (!absoluteFilename.endsWith(".jpg", Qt::CaseInsensitive)
+				&& !absoluteFilename.endsWith(".tiff", Qt::CaseInsensitive)
+				&& !absoluteFilename.endsWith(".png", Qt::CaseInsensitive)
+				&& !absoluteFilename.endsWith(".tif", Qt::CaseInsensitive)
+				&& !absoluteFilename.endsWith(".jpeg", Qt::CaseInsensitive)) {
+			
+				QString xmpFile = absoluteFilename.replace(absoluteFilename.size() -3, 3, "xmp");
+				if (currentDirectory.exists(xmpFile)) {
+					Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toAscii().data());
+					xmpImage->readMetadata();
+
+					xmpData = xmpImage->xmpData();
+					xmpDatum = xmpData["Xmp.xmp.Rating"];
+					int xmpRating = (int) xmpDatum.toLong();
+					if (xmpRating != -1) {
+						rating = xmpRating;
+					}
+					xmpDatum = xmpData["Xmp.xmp.Label"];
+					label = QString::fromStdString(xmpDatum.toString());
+
+					exifData = xmpImage->exifData();
+					exifDatum = exifData["Exif.Image.Orientation"];
+					int exifOrientation = (int) exifDatum.toLong();
+					if (exifOrientation != -1) {
+						orientation = exifOrientation;
+					}
+				}
+			}
+
+		} catch (Exiv2::AnyError& e) {
+			std::cout << "Caught Exiv2 exception '" << e << "'\n";
+		}
+
+		if (rating < 0) rating = 0;
+
+		fileRatings.append(rating);
+		fileLabels.append(label);
+		fileOrientations.append(orientation);
+
+		// informieren der ProgressBar
+		currentProgress = i * 100 / max;
+		if (currentProgress != oldProgress) {
+			view->updateProgress(currentProgress);
+			oldProgress = currentProgress;
+		}
+
+	}
+
+	view->updateProgress(0);
 
 	if (starFilter > 0) {
 		for (int i = files.length() -1; i >= 0; i--) {
 			if (getRating(i) < starFilter) {
 				files.removeAt(i);
+				fileRatings.removeAt(i);
+				fileLabels.removeAt(i);
 			}
 		}
 	}
@@ -60,6 +153,8 @@ printf("Directory enthaelt %d images\n", files.size());
 		for (int i = files.length() -1; i >= 0; i--) {
 			if (getLabel(i) != colorFilter) {
 				files.removeAt(i);
+				fileRatings.removeAt(i);
+				fileLabels.removeAt(i);
 			}
 		}
 	}
@@ -80,6 +175,10 @@ QString ImageBrowserModel::getAbsoluteFileName(int i) {
 }
 
 int ImageBrowserModel::getImageOrientation(int index) {
+	return fileOrientations.at(index);
+}
+
+int ImageBrowserModel::getImageOrientationFromFile(int index) {
 	int orientation = 1;
 	try {
 		QString absoluteFilename = files.at(index).absoluteFilePath();
@@ -89,7 +188,10 @@ int ImageBrowserModel::getImageOrientation(int index) {
 		image->readMetadata();
 		Exiv2::ExifData exifData = image->exifData();
 		Exiv2::Exifdatum exifDatum = exifData["Exif.Image.Orientation"];
-		orientation = (int) exifDatum.toLong();
+		int exifOrientation = (int) exifDatum.toLong();
+		if (exifOrientation != -1) {
+			orientation = exifOrientation;
+		}
 
 		// XMP's are only created for RAW-files, other files do have their information embedded in the image!
 		if (!absoluteFilename.endsWith(".jpg", Qt::CaseInsensitive)
@@ -114,6 +216,7 @@ int ImageBrowserModel::getImageOrientation(int index) {
 		std::cout << "Caught Exiv2 exception '" << e << "'\n";
 	}
 
+	fileOrientations.replace(index, orientation);
 	return orientation;
 }
 
@@ -184,6 +287,10 @@ QImage ImageBrowserModel::getImage(int index, int maxsize) {
 }
 
 int ImageBrowserModel::getRating(int index) {
+	return fileRatings.at(index);
+}
+
+int ImageBrowserModel::getRatingFromFile(int index) {
 	int rating = 0;
 	try {
 		QString absoluteFilename = files.at(index).absoluteFilePath();
@@ -220,6 +327,8 @@ int ImageBrowserModel::getRating(int index) {
 	}
 
 	if (rating < 0) rating = 0;
+
+	fileRatings.replace(index, rating);
 	return rating;
 }
 
@@ -270,6 +379,8 @@ void ImageBrowserModel::updateRating(int i, int rating) {
 	} catch (Exiv2::AnyError& e) {
 		std::cout << "Caught Exiv2 exception '" << e << "'\n";
 	}
+
+	getRatingFromFile(i);
 }
 
 void ImageBrowserModel::updateRating(QString name, int rating) {
@@ -281,6 +392,10 @@ void ImageBrowserModel::updateRating(QString name, int rating) {
 }
 
 QString ImageBrowserModel::getLabel(int index) {
+	return fileLabels.at(index);
+}
+
+QString ImageBrowserModel::getLabelFromFile(int index) {
 	QString label = "";
 	QString absoluteFilename = files.at(index).absoluteFilePath();
 qDebug() << "Bearbeitung für Image: " + absoluteFilename;
@@ -325,6 +440,8 @@ qDebug() << "xmp.Label = " + label + " für Image: " + absoluteFilename;
 	if (rating < 0) rating = 0;
 	return rating;
 	*/
+
+	fileLabels.replace(index, label);
 	return label;
 }
 
@@ -375,6 +492,8 @@ void ImageBrowserModel::updateLabel(int i, QString label) {
 	} catch (Exiv2::AnyError& e) {
 		std::cout << "Caught Exiv2 exception '" << e << "'\n";
 	}
+
+	getLabelFromFile(i);
 }
 
 void ImageBrowserModel::updateLabel(QString name, QString label) {
@@ -465,6 +584,8 @@ void ImageBrowserModel::rotateImage(int i, Rotation direction) {
 	} catch (Exiv2::AnyError& e) {
 		std::cout << "Caught Exiv2 exception '" << e << "'\n";
 	}
+
+	getImageOrientationFromFile(i);
 }
 
 void ImageBrowserModel::deleteImage(int i) {
@@ -475,6 +596,9 @@ void ImageBrowserModel::deleteImage(int i) {
 
 		QFile::remove(absoluteFilename);
 		files.removeAt(i);
+		fileRatings.removeAt(i);
+		fileLabels.removeAt(i);
+		fileOrientations.removeAt(i);
 		QString xmpFile = absoluteFilename.replace(absoluteFilename.size() -3, 3, "xmp");
 		if (currentDirectory.exists(xmpFile)) {
 			QFile::remove(xmpFile);
