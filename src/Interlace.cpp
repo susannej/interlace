@@ -71,6 +71,6 @@ void Interlace::about() {
 	QMessageBox::about(this, tr("About Interlace"),
 		tr("<h2>Interlace 0.1</h2>"
 		"<p>Copyright &copy; 2014-2019 Susanne Jaeckel</p>"
-		"<p>A small application for picture-management.</p>"
+		"<p>A small application for your photo-management.</p>"
 	));
 }
