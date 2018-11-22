@@ -2,7 +2,7 @@
 
 #define MAINVIEW_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 class SourceTabView;
 class ImageBrowserScrollArea;
@@ -26,6 +26,9 @@ class MainView : public QSplitter
 		QWidget *midView;
 		ImageBrowserScrollArea *scrollArea;
 		ImageBrowserView *browser;
+
+		QWidget *rightView;
+		QTableWidget *infoTable;
 
 		QComboBox *starFilter;
 		QComboBox *colorFilter;

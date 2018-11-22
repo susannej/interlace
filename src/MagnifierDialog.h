@@ -2,7 +2,7 @@
 
 #define MAGNIFIERDIALOG_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 class InterlaceConfig;
 class ImageBrowserView;

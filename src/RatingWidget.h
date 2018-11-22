@@ -2,7 +2,7 @@
 
 #define RATINGWIDGET_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 class RatingWidget : public QWidget
 {

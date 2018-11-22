@@ -2,7 +2,7 @@
 
 #define INTERLACECONFIG_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 class InterlaceConfig
 {

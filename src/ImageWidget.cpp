@@ -65,7 +65,7 @@ void ImageWidget::setLabel(QString label) {
 		colorLabel->setStyleSheet("background-color: " + color);
 	} else {
 		if (selected)
-			colorLabel->setStyleSheet("background-color: #FFA02F");
+			colorLabel->setStyleSheet(SELECTED_COLOR);
 		else
 			colorLabel->setStyleSheet("background-color: #555");
 	}
@@ -86,10 +86,11 @@ void ImageWidget::setSize(int width, int height) {
 
 void ImageWidget::setSelected(bool sel) {
 	if (sel) {
-		setStyleSheet("background-color: #FFA02F; color: #000000");
+		//setStyleSheet("background-color: #FFA02F; color: #000000");
+		setStyleSheet(SELECTED_COLOR);
 		selected = true;
 		if (m_label.size() == 0) {
-			colorLabel->setStyleSheet("background-color: #FFA02F");
+			colorLabel->setStyleSheet(SELECTED_COLOR);
 		}
 	} else {
 		setStyleSheet("background-color: #555");

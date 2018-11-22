@@ -95,8 +95,28 @@ MainView::MainView(QWidget *parent) {
 	connect(deleteSelection, SIGNAL(clicked()), browser, SLOT(deleteSelection()));
 	connect(magnifier, SIGNAL(clicked()), browser, SLOT(magnifier()));
 
+	// rightView
+
+	rightView = new QWidget;
+	QGridLayout *rVl = new QGridLayout;
+	rightView->setLayout(rVl);
+
+	QScrollArea *infoScrollArea = new QScrollArea;
+	infoScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+	infoTable = new QTableWidget(infoScrollArea);
+	infoTable->setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
+	infoScrollArea->setWidget(infoTable);
+
+	rVl->addWidget(infoScrollArea, 0, 0);
+
+	// End View Configuration
+
 	addWidget(leftView);
+	setStretchFactor(0, 0);
 	addWidget(midView);
+	setStretchFactor(1, 1);
+	addWidget(rightView);
+	setStretchFactor(2, 0);
 }
 
 void MainView::dirSelected(QString directoryName) {

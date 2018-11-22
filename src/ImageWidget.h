@@ -2,10 +2,15 @@
 
 #define IMAGEWIDGET_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 class ImageBrowserView;
 class RatingWidget;
+
+/*
+#define SELECTED_COLOR "background-color: #FFA02F"
+*/
+#define SELECTED_COLOR "background-color: #2E8CFF"
 
 class ImageWidget : public QWidget
 {

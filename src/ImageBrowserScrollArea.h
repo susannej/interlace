@@ -2,7 +2,7 @@
 
 #define IMAGEBROWSERSCROLLAREA_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 class ImageBrowserView;
 class MainView;

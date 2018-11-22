@@ -2,7 +2,7 @@
 
 #define IMAGEBROWSERVIEW_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "ImageBrowserModel.h"
 

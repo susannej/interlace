@@ -24,7 +24,7 @@ void ImageBrowserModel::dirUpdate() {
 	}
 
 	/*
-	QByteArray barray = currentDirectory.toAscii();
+	QByteArray barray = currentDirectory.toLatin1();
 	char* s = barray.data();
 	printf("dirtree activated %s\n", s);
 	*/
@@ -70,7 +70,7 @@ int ImageBrowserModel::readdir() {
 			QString absoluteFilename = files.at(i).absoluteFilePath();
 
 			// Read the Metadata to get later at least the orientation...
-			Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
+			Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toLatin1().data());
 			image->readMetadata();
 			
 			Exiv2::XmpData xmpData = image->xmpData();
@@ -98,7 +98,7 @@ int ImageBrowserModel::readdir() {
 			
 				QString xmpFile = absoluteFilename.replace(absoluteFilename.size() -3, 3, "xmp");
 				if (currentDirectory.exists(xmpFile)) {
-					Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toAscii().data());
+					Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toLatin1().data());
 					xmpImage->readMetadata();
 
 					xmpData = xmpImage->xmpData();
@@ -186,7 +186,7 @@ int ImageBrowserModel::getImageOrientationFromFile(int index) {
 		QString absoluteFilename = files.at(index).absoluteFilePath();
 
 		// Read the Metadata to get later at least the orientation...
-		Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
+		Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toLatin1().data());
 		image->readMetadata();
 		Exiv2::ExifData exifData = image->exifData();
 		Exiv2::Exifdatum exifDatum = exifData["Exif.Image.Orientation"];
@@ -204,7 +204,7 @@ int ImageBrowserModel::getImageOrientationFromFile(int index) {
 			
 			QString xmpFile = absoluteFilename.replace(absoluteFilename.size() -3, 3, "xmp");
 			if (currentDirectory.exists(xmpFile)) {
-				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toAscii().data());
+				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toLatin1().data());
 				xmpImage->readMetadata();
 				Exiv2::ExifData xmpExifData = xmpImage->exifData();
 				Exiv2::Exifdatum xmpExifDatum = xmpExifData["Exif.Image.Orientation"];
@@ -238,7 +238,7 @@ QImage ImageBrowserModel::getImage(int index, int maxsize) {
 				|| absoluteFilename.endsWith(".jpeg", Qt::CaseInsensitive)) { // GIF, PSD, JP2, EPS auch noch ausprobieren!!!
 				qimage = QImage(absoluteFilename);
 			} else {
-				Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
+				Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toLatin1().data());
 				image->readMetadata();
 				Exiv2::PreviewManager manager(*image);
 				Exiv2::PreviewPropertiesList props = manager.getPreviewProperties();
@@ -298,7 +298,7 @@ int ImageBrowserModel::getRatingFromFile(int index) {
 		QString absoluteFilename = files.at(index).absoluteFilePath();
 
 		// Read the Metadata to get later at least the orientation...
-		Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
+		Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toLatin1().data());
 		image->readMetadata();
 		Exiv2::XmpData xmpData = image->xmpData();
 		Exiv2::Xmpdatum xmpDatum = xmpData["Xmp.xmp.Rating"];
@@ -313,7 +313,7 @@ int ImageBrowserModel::getRatingFromFile(int index) {
 			
 			QString xmpFile = absoluteFilename.replace(absoluteFilename.size() -3, 3, "xmp");
 			if (currentDirectory.exists(xmpFile)) {
-				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toAscii().data());
+				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toLatin1().data());
 				xmpImage->readMetadata();
 				Exiv2::XmpData xmpXmpData = xmpImage->xmpData();
 				Exiv2::Xmpdatum xmpXmpDatum = xmpXmpData["Xmp.xmp.Rating"];
@@ -347,7 +347,7 @@ void ImageBrowserModel::updateRating(int i, int rating) {
 			|| absoluteFilename.endsWith(".jpeg", Qt::CaseInsensitive)) {
 
 			// Read the Metadata to get later at least the orientation...
-			Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
+			Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toLatin1().data());
 			image->readMetadata();
 			Exiv2::XmpData xmpData = image->xmpData();
 			xmpData["Xmp.xmp.Rating"] = rating;
@@ -359,7 +359,7 @@ void ImageBrowserModel::updateRating(int i, int rating) {
 			QString xmpFile = absoluteFilename.replace(absoluteFilename.size() -3, 3, "xmp");
 			if (currentDirectory.exists(xmpFile)) {
 
-				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toAscii().data());
+				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toLatin1().data());
 				xmpImage->readMetadata();
 				Exiv2::XmpData xmpXmpData = xmpImage->xmpData();
 				xmpXmpData["Xmp.xmp.Rating"] = rating;
@@ -367,7 +367,7 @@ void ImageBrowserModel::updateRating(int i, int rating) {
 				xmpImage->setXmpData(xmpXmpData);
 				xmpImage->writeMetadata();
 			} else {
-				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, xmpFile.toAscii().data());
+				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, xmpFile.toLatin1().data());
 				Exiv2::XmpData xmpData;
 				Exiv2::XmpProperties::registerNs("http://ns.adobe.com/xap/1.0/", "xmp");
 				xmpData["Xmp.xmp.Rating"] = rating;
@@ -403,7 +403,7 @@ QString ImageBrowserModel::getLabelFromFile(int index) {
 qDebug() << "Bearbeitung für Image: " + absoluteFilename;
 	try {
 		// Read the Metadata to get later at least the orientation...
-		Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
+		Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toLatin1().data());
 		image->readMetadata();
 		Exiv2::XmpData xmpData = image->xmpData();
 		Exiv2::Xmpdatum xmpDatum = xmpData["Xmp.xmp.Label"];
@@ -418,7 +418,7 @@ qDebug() << "Bearbeitung für Image: " + absoluteFilename;
 			
 			QString xmpFile = absoluteFilename.replace(absoluteFilename.size() -3, 3, "xmp");
 			if (currentDirectory.exists(xmpFile)) {
-				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toAscii().data());
+				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toLatin1().data());
 				xmpImage->readMetadata();
 				Exiv2::XmpData xmpXmpData = xmpImage->xmpData();
 				Exiv2::Xmpdatum xmpXmpDatum = xmpXmpData["Xmp.xmp.Label"];
@@ -460,7 +460,7 @@ void ImageBrowserModel::updateLabel(int i, QString label) {
 			|| absoluteFilename.endsWith(".jpeg", Qt::CaseInsensitive)) {
 
 			// Read the Metadata to get later at least the orientation...
-			Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
+			Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toLatin1().data());
 			image->readMetadata();
 			Exiv2::XmpData xmpData = image->xmpData();
 			xmpData["Xmp.xmp.Label"] = label.toStdString();
@@ -472,7 +472,7 @@ void ImageBrowserModel::updateLabel(int i, QString label) {
 			QString xmpFile = absoluteFilename.replace(absoluteFilename.size() -3, 3, "xmp");
 			if (currentDirectory.exists(xmpFile)) {
 
-				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toAscii().data());
+				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toLatin1().data());
 				xmpImage->readMetadata();
 				Exiv2::XmpData xmpXmpData = xmpImage->xmpData();
 				xmpXmpData["Xmp.xmp.Label"] = label.toStdString();
@@ -480,7 +480,7 @@ void ImageBrowserModel::updateLabel(int i, QString label) {
 				xmpImage->setXmpData(xmpXmpData);
 				xmpImage->writeMetadata();
 			} else {
-				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, xmpFile.toAscii().data());
+				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, xmpFile.toLatin1().data());
 				Exiv2::XmpData xmpData;
 				Exiv2::XmpProperties::registerNs("http://ns.adobe.com/xap/1.0/", "xmp");
 				xmpData["Xmp.xmp.Label"] = label.toStdString();
@@ -552,7 +552,7 @@ void ImageBrowserModel::rotateImage(int i, Rotation direction) {
 			|| absoluteFilename.endsWith(".tif", Qt::CaseInsensitive)
 			|| absoluteFilename.endsWith(".jpeg", Qt::CaseInsensitive)) {
 
-			Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toAscii().data());
+			Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toLatin1().data());
 			image->readMetadata();
 			Exiv2::ExifData exifData = image->exifData();
 			exifData["Exif.Image.Orientation"] = orientation;
@@ -564,7 +564,7 @@ void ImageBrowserModel::rotateImage(int i, Rotation direction) {
 			QString xmpFile = absoluteFilename.replace(absoluteFilename.size() -3, 3, "xmp");
 			if (currentDirectory.exists(xmpFile)) {
 
-				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toAscii().data());
+				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toLatin1().data());
 				xmpImage->readMetadata();
 				Exiv2::ExifData exifData = xmpImage->exifData();
 				Exiv2::XmpProperties::registerNs("http://ns.adobe.com/tiff/1.0/", "tiff");
@@ -572,7 +572,7 @@ void ImageBrowserModel::rotateImage(int i, Rotation direction) {
 				xmpImage->setExifData(exifData);
 				xmpImage->writeMetadata();
 			} else {
-				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, xmpFile.toAscii().data());
+				Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, xmpFile.toLatin1().data());
 				Exiv2::ExifData exifData;
 				Exiv2::XmpProperties::registerNs("http://ns.adobe.com/tiff/1.0/", "tiff");
 				exifData["Exif.Image.Orientation"] = orientation;
