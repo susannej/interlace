@@ -20,11 +20,13 @@ class InterlaceConfig
 		int getLabelIndex(QString label);
 		QString getLabelDesc(int no);
 		QIcon getIcon4Color(QString label);
+		QString getStartDirectory();
 		
 	private:
 		static InterlaceConfig* instance;
 
 		int imageSize;
+		QString *startDirectory;
 		QStringList *prgDesc;
 		QStringList *prgCommand;
 		QStringList *labelDesc;

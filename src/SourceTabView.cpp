@@ -2,6 +2,8 @@
 
 #include "MainView.h"
 
+#include <iostream>
+
 SourceTabView::SourceTabView(MainView *parent) {
 	this->parent = parent;
 
@@ -21,6 +23,7 @@ SourceTabView::SourceTabView(MainView *parent) {
 	dirtree->sortByColumn(0, Qt::AscendingOrder);
 
 	connect(dirtree, SIGNAL(clicked(const QModelIndex &)), this, SLOT(dirtreeItemClicked(const QModelIndex &)));
+	//connect(dirmodel, SIGNAL(directoryLoaded(QString)), this, SLOT(dirmodelDirectoryLoaded(QString)));
 
 	databasetree = new QWidget;
 
@@ -30,4 +33,20 @@ SourceTabView::SourceTabView(MainView *parent) {
 
 void SourceTabView::dirtreeItemClicked(const QModelIndex &index) {
 	parent->dirSelected(dirmodel->filePath(index));
+}
+
+void SourceTabView::dirmodelDirectoryLoaded(const QString &path) {
+	//std::cout << path.toLatin1();
+	/*
+	if (path == "/home/susanne/Bilder") {
+		//startPathIdx = dirmodel->setRootPath("/home/susanne/Bilder");
+		dirtree->setCurrentIndex(startPathIdx);
+	}
+	*/
+}
+
+void SourceTabView::setStartDirectory(QString dir) {
+	QModelIndex rootIndex = dirmodel->index(QDir::cleanPath(dir));
+        if (rootIndex.isValid())
+            dirtree->setCurrentIndex(rootIndex);
 }

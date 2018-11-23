@@ -12,6 +12,7 @@ InterlaceConfig::InterlaceConfig() {
 	QPixmap pixmap(16, 16);
 	pixmap.fill(Qt::transparent);
 	labelIcons->append(pixmap);
+	startDirectory = new QString("");
 }
 
 InterlaceConfig::~InterlaceConfig() {
@@ -68,6 +69,9 @@ void InterlaceConfig::read() {
 				QPixmap pixmap(16, 16);
 				pixmap.fill(QColor(list2.at(1)));
 				labelIcons->append(pixmap);
+			} else if (line.startsWith("StartDirectory")) {
+				QStringList list1 = line.split("=");
+				*startDirectory = list1.at(1);
 			}
 			
 			qDebug()<<line;
@@ -128,4 +132,8 @@ QString InterlaceConfig::getLabelDesc(int no) {
 
 QIcon InterlaceConfig::getIcon4Color(QString label) {
 	return labelIcons->at(getLabelIndex(label) +1);
+}
+
+QString InterlaceConfig::getStartDirectory() {
+	return *startDirectory;
 }

@@ -8,6 +8,8 @@
 MainView::MainView(QWidget *parent) {
 	this->parent = parent;
 
+	InterlaceConfig *config = InterlaceConfig::getInstance();
+
 	// Directory Area
 	leftView = new QWidget;
 	QGridLayout *lVl = new QGridLayout;
@@ -117,6 +119,10 @@ MainView::MainView(QWidget *parent) {
 	setStretchFactor(1, 1);
 	addWidget(rightView);
 	setStretchFactor(2, 0);
+
+	QString startDirectory = config->getStartDirectory();
+	tabview->setStartDirectory(startDirectory);
+	browser->dirSelected(startDirectory);
 }
 
 void MainView::dirSelected(QString directoryName) {
