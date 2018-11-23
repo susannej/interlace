@@ -18,7 +18,7 @@ The configuration file should have the name Interlace.cfg and resides in the %US
 
 ### Example content:
 ImageSize=250  
-StartDirectory=C:\Benutzer\joe\Eigene Bilder
+StartDirectory=C:\Benutzer\joe\Eigene Bilder  
 Prg=PhotoNinja;"C:\Program Files\PictureCode\PhotoNinja\PhotoNinja64.exe" "${file}"  
 Prg=Gimp;"C:\Program Files\GIMP 2\bin\gimp-2.8.exe" "${file}"  
 Prg=ImageViewer;"C:\Program Files (x86)\FastStone Image Viewer\FSViewer.exe" "${file}"  
@@ -33,9 +33,9 @@ The configuration file should have the name Interlace.cfg and resides in the $HO
 
 ### Example content:
 ImageSize=250  
-StartDirectory=/home/joe/Bilder
-Prg=PhotoNinja;wine /home/joe/.wine/drive_c/windows/command/start.exe /Unix /home/joe/.wine/drive_c/Programme/PictureCode/PhotoNinja/PhotoNinja32.exe "z:/${file}"
-Prg=Gimp;gimp "${file}"
+StartDirectory=/home/joe/Bilder  
+Prg=PhotoNinja;wine /home/joe/.wine/drive_c/windows/command/start.exe /Unix /home/joe/.wine/drive_c/Programme/PictureCode/PhotoNinja/PhotoNinja32.exe "z:/${file}"  
+Prg=Gimp;gimp "${file}"  
 Label=Red;Red  
 Label=Yellow;Yellow  
 Label=Blue;Blue  
