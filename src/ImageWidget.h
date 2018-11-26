@@ -23,6 +23,7 @@ class ImageWidget : public QWidget
 		void setImage(QImage image);
 		void setName(QString name);
 		void setAbsoluteName(QString absoluteName);
+		QString getAbsoluteName();
 		void setRating(int rating);
 		void setLabel(QString label);
 		void setSize(int width, int height);

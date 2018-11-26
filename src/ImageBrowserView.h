@@ -27,6 +27,7 @@ class ImageBrowserView : public QWidget
 		bool isCtrlButtonPressed();
 		int getNoOfSelectedImages();
 		void updateProgress(int value);
+		void popImages(QWidget*);
 
 	public slots:
 		void addWidget2View(QWidget *image, int i);

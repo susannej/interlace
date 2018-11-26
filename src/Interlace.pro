@@ -3,6 +3,7 @@
 ######################################################################
 
 QT += widgets
+QT += concurrent
 #CONFIG += release
 #CONFIG -= debug
 TEMPLATE = app

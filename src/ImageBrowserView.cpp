@@ -5,6 +5,9 @@
 #include "InterlaceConfig.h"
 #include "MagnifierDialog.h"
 
+#include <QtConcurrent>
+#include <iostream>
+
 //#define DIA_SIZE 200
 
 ImageBrowserView::ImageBrowserView() {
@@ -116,6 +119,21 @@ void ImageBrowserView::cleanupWidgets() {
 		
 }
 
+void ImageBrowserView::popImages(QWidget* w) {
+	//ImageWidget *imageWidget;
+	//imageWidget = (ImageWidget) w;
+	//std::cout << imageWidget->getAbsoluteName().toStdString() << "\n";
+	InterlaceConfig *conf = InterlaceConfig::getInstance();
+	QString name = ((ImageWidget*) w)->getAbsoluteName();
+	int index = 0;
+	for (int i = 0; i < vector.size(); i++) {
+		if (((ImageWidget*) vector[i])->getAbsoluteName() == name) {
+			index = i;
+		}
+	}
+	((ImageWidget*) w)->setImage(model->getImage(index, conf->getImageSize() - 50));
+}
+
 void ImageBrowserView::createWidgets() {
 	int max = model->getNoOfFiles();
 	int oldProgress = 0;
@@ -134,6 +152,8 @@ void ImageBrowserView::createWidgets() {
 		}
 	}
 	progressValueChanged(0);
+
+	QtConcurrent::map(vector.begin(), vector.end(), &ImageBrowserView::popImages);
 }
 
 void ImageBrowserView::updateView() {
@@ -184,7 +204,7 @@ QWidget* ImageBrowserView::createImage(int i) {
 	imageWidget->setAbsoluteName(model->getAbsoluteFileName(i));
 	imageWidget->setRating(model->getRating(i));
 	imageWidget->setLabel(model->getLabel(i));
-	imageWidget->setImage(model->getImage(i, conf->getImageSize() - 50));
+	//imageWidget->setImage(model->getImage(i, conf->getImageSize() - 50));
 	imageWidget->setName(model->getFileName(i));
 	imageWidget->setSize(conf->getImageSize(), conf->getImageSize());
 

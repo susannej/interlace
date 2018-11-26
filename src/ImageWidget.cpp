@@ -53,6 +53,10 @@ void ImageWidget::setAbsoluteName(QString absoluteName) {
 	imageAbsoluteName = absoluteName;
 }
 
+QString ImageWidget::getAbsoluteName() {
+	return imageAbsoluteName;
+}
+
 void ImageWidget::setRating(int rating) {
 	ratingWidget->setRating(rating);
 }
