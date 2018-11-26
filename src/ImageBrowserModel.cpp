@@ -263,12 +263,6 @@ QImage ImageBrowserModel::getImage(int index, int maxsize) {
 		std::cout << "Caught Exiv2 exception '" << e << "'\n";
 	}
 
-	if (qimage.width() > qimage.height()) {
-		qimage = qimage.scaledToWidth(maxsize, Qt::SmoothTransformation); // Qt::SmoothTransformation oder Qt::FastTransformation
-	} else {
-		qimage = qimage.scaledToHeight(maxsize, Qt::SmoothTransformation);
-	}
-
 	if (orientation != 1) {
 		QTransform tf;
 		switch (orientation) {
@@ -284,6 +278,18 @@ QImage ImageBrowserModel::getImage(int index, int maxsize) {
 		}	
 		qimage = qimage.transformed(tf, Qt::SmoothTransformation);
 	}
+
+	int maxwidth = maxsize;
+	int maxheight = maxsize - 40;
+	qimage = qimage.scaled(maxwidth, maxheight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+	/*
+	if (qimage.width() > qimage.height()) {
+		qimage = qimage.scaledToWidth(maxsize, Qt::SmoothTransformation); // Qt::SmoothTransformation oder Qt::FastTransformation
+	} else {
+		qimage = qimage.scaledToHeight(maxheight, Qt::SmoothTransformation);
+	}
+	*/
 
 	return qimage;
 }
