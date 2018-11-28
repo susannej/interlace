@@ -5,6 +5,7 @@
 #include <QtWidgets>
 
 #include "ImageBrowserModel.h"
+#include "ToolFunctions.h"
 
 class ImageBrowserModel;
 
@@ -27,7 +28,6 @@ class ImageBrowserView : public QWidget
 		bool isCtrlButtonPressed();
 		int getNoOfSelectedImages();
 		void updateProgress(int value);
-		void popImages(QWidget*);
 
 	public slots:
 		void addWidget2View(QWidget *image, int i);
@@ -50,6 +50,7 @@ class ImageBrowserView : public QWidget
 		QGridLayout *gridLayout;
 		QVector<QWidget*> vector;
 		bool ctrlButtonPressed;
+        QFuture<void> readImagesProcess;
 
 		void updateView();
 		void rotateSelection(ImageBrowserModel::Rotation direction);

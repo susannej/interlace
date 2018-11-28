@@ -6,7 +6,6 @@
 #include "MagnifierDialog.h"
 
 #include <QtConcurrent>
-#include <iostream>
 
 //#define DIA_SIZE 200
 
@@ -110,6 +109,10 @@ void ImageBrowserView::removeWidgets() {
 }
 
 void ImageBrowserView::cleanupWidgets() {
+    if (/*readImagesProcess && */!readImagesProcess.isFinished()) {
+        readImagesProcess.cancel();
+        readImagesProcess.waitForFinished();
+    }
 	int count = vector.size();
 	for (int i = 0; i < count; i++) {
 		int last = vector.size() -1;
@@ -117,21 +120,6 @@ void ImageBrowserView::cleanupWidgets() {
 		vector.remove(last);
 	}
 		
-}
-
-void ImageBrowserView::popImages(QWidget* w) {
-	//ImageWidget *imageWidget;
-	//imageWidget = (ImageWidget) w;
-	//std::cout << imageWidget->getAbsoluteName().toStdString() << "\n";
-	InterlaceConfig *conf = InterlaceConfig::getInstance();
-	QString name = ((ImageWidget*) w)->getAbsoluteName();
-	int index = 0;
-	for (int i = 0; i < vector.size(); i++) {
-		if (((ImageWidget*) vector[i])->getAbsoluteName() == name) {
-			index = i;
-		}
-	}
-	((ImageWidget*) w)->setImage(model->getImage(index, conf->getImageSize() - 50));
 }
 
 void ImageBrowserView::createWidgets() {
@@ -153,7 +141,7 @@ void ImageBrowserView::createWidgets() {
 	}
 	progressValueChanged(0);
 
-	QtConcurrent::map(vector.begin(), vector.end(), &ImageBrowserView::popImages);
+	readImagesProcess = QtConcurrent::map(vector, popImages);
 }
 
 void ImageBrowserView::updateView() {

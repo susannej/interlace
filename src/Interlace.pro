@@ -32,6 +32,7 @@ UI_DIR = ../build/ui
 
 # Input
 HEADERS += Interlace.h \
+    ToolFunctions.h \
 	MainView.h \
 	SourceTabView.h \
 	ImageBrowserScrollArea.h \
@@ -44,6 +45,7 @@ HEADERS += Interlace.h \
 	UserConfig.h
 
 SOURCES += Interlace.cpp \
+    ToolFunctions.cpp \
 	MainView.cpp \
 	SourceTabView.cpp \
 	ImageBrowserScrollArea.cpp \
