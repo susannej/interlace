@@ -102,14 +102,29 @@ MainView::MainView(QWidget *parent) {
 	rightView = new QWidget;
 	QGridLayout *rVl = new QGridLayout;
 	rightView->setLayout(rVl);
-
+	
+	/*
 	QScrollArea *infoScrollArea = new QScrollArea;
 	infoScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 	infoTable = new QTableWidget(infoScrollArea);
+	infoTable->verticalHeader()->setVisible(false);
+	infoTable->setColumnCount(2);
+	infoTable->setRowCount(15);
+	infoTable->setItem(0, 1, new QTableWidgetItem("Hello"));
 	infoTable->setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
 	infoScrollArea->setWidget(infoTable);
 
 	rVl->addWidget(infoScrollArea, 0, 0);
+	*/
+	infoTable = new QTableWidget(rightView);
+	infoTable->verticalHeader()->setVisible(false);
+	infoTable->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+	infoTable->setColumnCount(2);
+	infoTable->setRowCount(15);
+	infoTable->setItem(0, 1, new QTableWidgetItem("Hello"));
+	infoTable->setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
+
+	rVl->addWidget(infoTable, 0, 0);
 
 	// End View Configuration
 
