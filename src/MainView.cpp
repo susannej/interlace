@@ -47,11 +47,11 @@ MainView::MainView(QWidget *parent) {
 	topBar->addSeparator();
 
 	colorFilter = new QComboBox();
-	InterlaceConfig *conf = InterlaceConfig::getInstance();
-	colorFilter->addItem(conf->getIcon4Color("None"), "None label");
-	for (int i = 0; i < conf->getConfLabels(); i++) {
-		QString label = conf->getLabelDesc(i);
-		colorFilter->addItem(conf->getIcon4Color(label), label + " label");
+	//InterlaceConfig *conf = InterlaceConfig::getInstance();
+	colorFilter->addItem(config->getIcon4Color("None"), "None label");
+	for (int i = 0; i < config->getConfLabels(); i++) {
+		QString label = config->getLabelDesc(i);
+		colorFilter->addItem(config->getIcon4Color(label), label + " label");
 	}
 	topBar->addWidget(colorFilter);
 
@@ -120,8 +120,11 @@ MainView::MainView(QWidget *parent) {
 	infoTable->verticalHeader()->setVisible(false);
 	infoTable->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 	infoTable->setColumnCount(2);
-	infoTable->setRowCount(15);
-	infoTable->setItem(0, 1, new QTableWidgetItem("Hello"));
+	QStringList exifKeys = config->getExifKeys();
+	infoTable->setRowCount(exifKeys.size());
+	for (int i = 0; i < exifKeys.size(); i++) {
+		infoTable->setItem(i, 0, new QTableWidgetItem(exifKeys.at(i)));
+	}
 	infoTable->setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
 
 	rVl->addWidget(infoTable, 0, 0);

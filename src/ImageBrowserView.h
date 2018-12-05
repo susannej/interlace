@@ -50,7 +50,7 @@ class ImageBrowserView : public QWidget
 		QGridLayout *gridLayout;
 		QVector<QWidget*> vector;
 		bool ctrlButtonPressed;
-        QFuture<void> readImagesProcess;
+        	QFuture<void> readImagesProcess;
 
 		void updateView();
 		void rotateSelection(ImageBrowserModel::Rotation direction);

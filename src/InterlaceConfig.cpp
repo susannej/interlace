@@ -72,6 +72,10 @@ void InterlaceConfig::read() {
 			} else if (line.startsWith("StartDirectory")) {
 				QStringList list1 = line.split("=");
 				*startDirectory = list1.at(1);
+			} else if (line.startsWith("ExifKeys")) {
+				QStringList list1 = line.split("=");
+				exifKeys = list1.at(1).split(";");
+				exifKeys.sort(Qt::CaseInsensitive);
 			}
 			
 			qDebug()<<line;
@@ -136,4 +140,8 @@ QIcon InterlaceConfig::getIcon4Color(QString label) {
 
 QString InterlaceConfig::getStartDirectory() {
 	return *startDirectory;
+}
+
+QStringList InterlaceConfig::getExifKeys() {
+	return exifKeys;
 }

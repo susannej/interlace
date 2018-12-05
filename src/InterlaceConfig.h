@@ -21,6 +21,7 @@ class InterlaceConfig
 		QString getLabelDesc(int no);
 		QIcon getIcon4Color(QString label);
 		QString getStartDirectory();
+		QStringList getExifKeys();
 		
 	private:
 		static InterlaceConfig* instance;
@@ -32,6 +33,7 @@ class InterlaceConfig
 		QStringList *labelDesc;
 		QStringList *labelColor;
 		QVector<QIcon> *labelIcons;
+		QStringList exifKeys;
 
 		InterlaceConfig();
 		void read();
