@@ -87,36 +87,12 @@ MainView::MainView(QWidget *parent) {
 	mVl->addWidget(scrollArea, 1, 0);
 	mVl->addWidget(bottomBar, 2, 0);
 
-	connect(browser, SIGNAL(progressValueChanged(int)), dirProgress, SLOT(setValue(int)));
-	connect(refresh, SIGNAL(clicked()), browser, SLOT(dirUpdate()));
-	connect(starFilter, SIGNAL(currentIndexChanged(int)), browser, SLOT(setStarFilter(int)));
-	connect(colorFilter, SIGNAL(currentIndexChanged(int)), browser, SLOT(setColorFilter(int)));
-	connect(ctrl, SIGNAL(clicked(bool)), browser, SLOT(toggleSelectionMode(bool)));
-	connect(turnLeft, SIGNAL(clicked()), browser, SLOT(rotateSelectionLeft()));
-	connect(turnRight, SIGNAL(clicked()), browser, SLOT(rotateSelectionRight()));
-	connect(deleteSelection, SIGNAL(clicked()), browser, SLOT(deleteSelection()));
-	connect(magnifier, SIGNAL(clicked()), browser, SLOT(magnifier()));
-	connect(browser, SIGNAL(setExifData(QStringList)), this, SLOT(setExifData(QStringList)));
-
 	// rightView
 
 	rightView = new QWidget;
 	QGridLayout *rVl = new QGridLayout;
 	rightView->setLayout(rVl);
 	
-	/*
-	QScrollArea *infoScrollArea = new QScrollArea;
-	infoScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-	infoTable = new QTableWidget(infoScrollArea);
-	infoTable->verticalHeader()->setVisible(false);
-	infoTable->setColumnCount(2);
-	infoTable->setRowCount(15);
-	infoTable->setItem(0, 1, new QTableWidgetItem("Hello"));
-	infoTable->setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
-	infoScrollArea->setWidget(infoTable);
-
-	rVl->addWidget(infoScrollArea, 0, 0);
-	*/
 	infoTable = new QTableWidget(rightView);
 	infoTable->verticalHeader()->setVisible(false);
 	infoTable->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -124,12 +100,15 @@ MainView::MainView(QWidget *parent) {
 	QStringList exifKeys = config->getExifKeys();
 	infoTable->setRowCount(exifKeys.size());
 	for (int i = 0; i < exifKeys.size(); i++) {
-		infoTable->setItem(i, 0, new QTableWidgetItem(exifKeys.at(i)));
+		QTableWidgetItem *item = new QTableWidgetItem(exifKeys.at(i));
+		item->setFlags(item->flags() &~ Qt::ItemIsEditable);
+		infoTable->setItem(i, 0, item);
 	}
 	infoTable->setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
 	infoTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	infoTable->horizontalHeader()->stretchLastSection();
-	//infoTable->horizontalHeader()->setResizeMode(2,QHeaderView::Stretch);
+	infoTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+	infoTable->setSelectionMode(QAbstractItemView::SingleSelection);
 
 	rVl->addWidget(infoTable, 0, 0);
 
@@ -142,6 +121,18 @@ MainView::MainView(QWidget *parent) {
 	addWidget(rightView);
 	setStretchFactor(2, 0);
 
+	connect(browser, SIGNAL(progressValueChanged(int)), dirProgress, SLOT(setValue(int)));
+	connect(refresh, SIGNAL(clicked()), browser, SLOT(dirUpdate()));
+	connect(starFilter, SIGNAL(currentIndexChanged(int)), browser, SLOT(setStarFilter(int)));
+	connect(colorFilter, SIGNAL(currentIndexChanged(int)), browser, SLOT(setColorFilter(int)));
+	connect(ctrl, SIGNAL(clicked(bool)), browser, SLOT(toggleSelectionMode(bool)));
+	connect(turnLeft, SIGNAL(clicked()), browser, SLOT(rotateSelectionLeft()));
+	connect(turnRight, SIGNAL(clicked()), browser, SLOT(rotateSelectionRight()));
+	connect(deleteSelection, SIGNAL(clicked()), browser, SLOT(deleteSelection()));
+	connect(magnifier, SIGNAL(clicked()), browser, SLOT(magnifier()));
+	connect(browser, SIGNAL(setExifData(QStringList)), this, SLOT(setExifData(QStringList)));
+	connect(infoTable, SIGNAL(cellChanged(int, int)), this, SLOT(exifCellChanged(int, int)));
+
 	QString startDirectory = config->getStartDirectory();
 	tabview->setStartDirectory(startDirectory);
 	browser->dirSelected(startDirectory);
@@ -152,8 +143,16 @@ void MainView::dirSelected(QString directoryName) {
 }
 
 void MainView::setExifData(QStringList exifList) {
+	observeCellChange = false;
 	for (int i = 0; i < exifList.size(); i++) {
 		infoTable->setItem(i, 1, new QTableWidgetItem(exifList.at(i)));
 	}
+	observeCellChange = true;
 }
 
+void MainView::exifCellChanged(int row, int column) {
+	if (observeCellChange) {
+		qDebug() << "Exif Data changed in Cell: " << row << ":" << column;
+		browser->writeExifData(infoTable->item(row, 0)->text(), infoTable->item(row, 1)->text());
+	}
+}

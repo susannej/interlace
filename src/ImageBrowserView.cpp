@@ -311,5 +311,20 @@ void ImageBrowserView::exifDataUpdate() {
 			images << (((ImageWidget*) vector[i])->getAbsoluteName());
 		}
 	}
-	setExifData(model->readImageData(images));
+	if (images.size() > 0) {
+		setExifData(model->readImageData(images));
+	}
+}
+
+void ImageBrowserView::writeExifData(QString exifKey, QString text) {
+	QStringList images;
+	for (int i = 0; i < vector.size(); i++) {
+		if (((ImageWidget*) vector[i])->isSelected()) {
+			images << (((ImageWidget*) vector[i])->getAbsoluteName());
+		}
+	}
+	if (images.size() > 0) {
+		model->writeImageData(images, exifKey, text);
+		exifDataUpdate();
+	}
 }

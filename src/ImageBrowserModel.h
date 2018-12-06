@@ -37,6 +37,7 @@ class ImageBrowserModel
 		void rotateImage(int i, Rotation direction);
 		void deleteImage(int i);
 		QStringList readImageData(QStringList images);
+		void writeImageData(QStringList images, QString exifKey, QString text);
 
 	private:
 		ImageBrowserView *view;

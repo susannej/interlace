@@ -30,6 +30,7 @@ class ImageBrowserView : public QWidget
 		int getNoOfSelectedImages();
 		void updateProgress(int value);
 		void exifDataUpdate();
+		void writeExifData(QString exifKey, QString text);
 
 	public slots:
 		void addWidget2View(QWidget *image, int i);

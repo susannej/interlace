@@ -19,6 +19,7 @@ class MainView : public QSplitter
 
 	public slots:
 		void setExifData(QStringList exifList);
+		void exifCellChanged(int row, int column);
 
 	private:
 		QWidget *parent;
@@ -36,6 +37,8 @@ class MainView : public QSplitter
 
 		QComboBox *starFilter;
 		QComboBox *colorFilter;
+
+		bool observeCellChange = true;
 };
 
 #endif

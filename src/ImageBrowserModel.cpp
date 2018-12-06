@@ -639,8 +639,6 @@ QStringList ImageBrowserModel::readImageData(QStringList images) {
 			if (key.startsWith("Exif")) {
 				try {
 					Exiv2::Exifdatum tmpValue = exifData[key.toLatin1().data()];
-					//const Exiv2::Value &v = tmpValue.value();
-					//value = QString::fromStdString(/*tmpValue*/v.toString());
 					value = QString::fromStdString(tmpValue.print());
 				} catch (Exiv2::AnyError& e) {
 					value = "-";
@@ -648,8 +646,6 @@ QStringList ImageBrowserModel::readImageData(QStringList images) {
 			} else if (key.startsWith("Xmp")) {
 				try {
 					Exiv2::Xmpdatum tmpValue = xmpData[key.toLatin1().data()];
-					//const Exiv2::Value &v = tmpValue.value();
-					//value = QString::fromStdString(/*tmpValue*/v.toString());
 					value = QString::fromStdString(tmpValue.print());
 				} catch (Exiv2::AnyError& e) {
 					value = "-";
@@ -665,4 +661,8 @@ QStringList ImageBrowserModel::readImageData(QStringList images) {
 	}
 
 	return exifValues;
+}
+
+void ImageBrowserModel::writeImageData(QStringList images, QString exifKey, QString text)  {
+	qDebug() << "Write the following Text to the selected images: " << text;
 }
