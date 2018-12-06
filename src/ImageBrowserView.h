@@ -3,6 +3,7 @@
 #define IMAGEBROWSERVIEW_H
 
 #include <QtWidgets>
+#include <exiv2/exiv2.hpp>
 
 #include "ImageBrowserModel.h"
 #include "ToolFunctions.h"
@@ -28,6 +29,7 @@ class ImageBrowserView : public QWidget
 		bool isCtrlButtonPressed();
 		int getNoOfSelectedImages();
 		void updateProgress(int value);
+		void exifDataUpdate();
 
 	public slots:
 		void addWidget2View(QWidget *image, int i);
@@ -43,6 +45,7 @@ class ImageBrowserView : public QWidget
 	signals:
 		void progressValueChanged(int newValue);
 		void showWidget(QWidget *image, int i);
+		void setExifData(QStringList imageList);
 
 	private:
 		ImageBrowserModel *model;

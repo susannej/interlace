@@ -96,6 +96,7 @@ MainView::MainView(QWidget *parent) {
 	connect(turnRight, SIGNAL(clicked()), browser, SLOT(rotateSelectionRight()));
 	connect(deleteSelection, SIGNAL(clicked()), browser, SLOT(deleteSelection()));
 	connect(magnifier, SIGNAL(clicked()), browser, SLOT(magnifier()));
+	connect(browser, SIGNAL(setExifData(QStringList)), this, SLOT(setExifData(QStringList)));
 
 	// rightView
 
@@ -126,6 +127,9 @@ MainView::MainView(QWidget *parent) {
 		infoTable->setItem(i, 0, new QTableWidgetItem(exifKeys.at(i)));
 	}
 	infoTable->setHorizontalHeaderLabels(QStringList() << "Name" << "Value");
+	infoTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+	infoTable->horizontalHeader()->stretchLastSection();
+	//infoTable->horizontalHeader()->setResizeMode(2,QHeaderView::Stretch);
 
 	rVl->addWidget(infoTable, 0, 0);
 
@@ -146,3 +150,10 @@ MainView::MainView(QWidget *parent) {
 void MainView::dirSelected(QString directoryName) {
 	browser->dirSelected(directoryName);
 }
+
+void MainView::setExifData(QStringList exifList) {
+	for (int i = 0; i < exifList.size(); i++) {
+		infoTable->setItem(i, 1, new QTableWidgetItem(exifList.at(i)));
+	}
+}
+

@@ -76,6 +76,7 @@ void InterlaceConfig::read() {
 				QStringList list1 = line.split("=");
 				exifKeys = list1.at(1).split(";");
 				exifKeys.sort(Qt::CaseInsensitive);
+				exifKeys.removeDuplicates();
 			}
 			
 			qDebug()<<line;

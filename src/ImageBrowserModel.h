@@ -3,6 +3,7 @@
 #define IMAGEBROWSERMODEL_H
 
 #include <QtWidgets>
+#include <exiv2/exiv2.hpp>
 
 class ImageBrowserView;
 
@@ -35,6 +36,7 @@ class ImageBrowserModel
 		void updateLabel(QString name, QString label);
 		void rotateImage(int i, Rotation direction);
 		void deleteImage(int i);
+		QStringList readImageData(QStringList images);
 
 	private:
 		ImageBrowserView *view;

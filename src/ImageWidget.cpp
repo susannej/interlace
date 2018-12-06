@@ -104,6 +104,7 @@ void ImageWidget::setSelected(bool sel) {
 		}
 	}
 	update();
+	((ImageBrowserView*) parent())->exifDataUpdate();
 }
 
 bool ImageWidget::isSelected() {

@@ -303,3 +303,13 @@ int ImageBrowserView::getNoOfSelectedImages() {
 void ImageBrowserView::updateProgress(int value) {
 	progressValueChanged(value);
 }
+
+void ImageBrowserView::exifDataUpdate() {
+	QStringList images;
+	for (int i = 0; i < vector.size(); i++) {
+		if (((ImageWidget*) vector[i])->isSelected()) {
+			images << (((ImageWidget*) vector[i])->getAbsoluteName());
+		}
+	}
+	setExifData(model->readImageData(images));
+}

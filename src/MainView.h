@@ -3,6 +3,7 @@
 #define MAINVIEW_H
 
 #include <QtWidgets>
+#include <exiv2/exiv2.hpp>
 
 class SourceTabView;
 class ImageBrowserScrollArea;
@@ -15,6 +16,9 @@ class MainView : public QSplitter
 	public:
 		MainView(QWidget *parent = 0);
 		void dirSelected(QString directoryName);
+
+	public slots:
+		void setExifData(QStringList exifList);
 
 	private:
 		QWidget *parent;

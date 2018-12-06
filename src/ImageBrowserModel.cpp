@@ -2,7 +2,6 @@
 
 #include "ImageBrowserView.h"
 
-#include <exiv2/exiv2.hpp>
 #include <cassert>
 
 ImageBrowserModel::ImageBrowserModel(ImageBrowserView *view) {
@@ -614,4 +613,56 @@ void ImageBrowserModel::deleteImage(int i) {
 	} catch (Exiv2::AnyError& e) {
 		std::cout << "Caught Exiv2 exception '" << e << "'\n";
 	}
+}
+
+QStringList ImageBrowserModel::readImageData(QStringList images) {
+	InterlaceConfig *conf = InterlaceConfig::getInstance();
+	QStringList exifKeys = conf->getExifKeys();
+	QStringList exifValues;
+
+	// Initialize the exifValues List
+	for (int i = 0; i < exifKeys.size(); i++) {
+		exifValues << "";
+	}
+
+	// Schleife über alle selektierten Bilder
+	for (int i = 0; i < images.size(); i++) {
+		Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(images.at(i).toLatin1().data());
+
+		image->readMetadata();
+		Exiv2::XmpData xmpData = image->xmpData();
+		Exiv2::ExifData exifData = image->exifData();
+
+		for (int j = 0; j < exifKeys.size(); j++) {
+			QString key = exifKeys.at(j);
+			QString value;
+			if (key.startsWith("Exif")) {
+				try {
+					Exiv2::Exifdatum tmpValue = exifData[key.toLatin1().data()];
+					//const Exiv2::Value &v = tmpValue.value();
+					//value = QString::fromStdString(/*tmpValue*/v.toString());
+					value = QString::fromStdString(tmpValue.print());
+				} catch (Exiv2::AnyError& e) {
+					value = "-";
+				}
+			} else if (key.startsWith("Xmp")) {
+				try {
+					Exiv2::Xmpdatum tmpValue = xmpData[key.toLatin1().data()];
+					//const Exiv2::Value &v = tmpValue.value();
+					//value = QString::fromStdString(/*tmpValue*/v.toString());
+					value = QString::fromStdString(tmpValue.print());
+				} catch (Exiv2::AnyError& e) {
+					value = "-";
+				}
+			}
+
+			if (i == 0) {
+				exifValues.replace(j, value);
+			} else if (exifValues.at(j) != "<diff>" && exifValues.at(j) != value) {
+				exifValues.replace(j, "<diff>");
+			}
+		}
+	}
+
+	return exifValues;
 }
