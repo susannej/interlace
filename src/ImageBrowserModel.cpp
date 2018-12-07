@@ -632,6 +632,7 @@ QStringList ImageBrowserModel::readImageData(QStringList images) {
 		image->readMetadata();
 		Exiv2::XmpData xmpData = image->xmpData();
 		Exiv2::ExifData exifData = image->exifData();
+		Exiv2::IptcData iptcData = image->iptcData();
 
 		for (int j = 0; j < exifKeys.size(); j++) {
 			QString key = exifKeys.at(j);
@@ -650,6 +651,13 @@ QStringList ImageBrowserModel::readImageData(QStringList images) {
 				} catch (Exiv2::AnyError& e) {
 					value = "-";
 				}
+			} else if (key.startsWith("Iptc")) {
+				try {
+					Exiv2::Iptcdatum tmpValue = iptcData[key.toLatin1().data()];
+					value = QString::fromStdString(tmpValue.print());
+				} catch (Exiv2::AnyError& e) {
+					value = "-";
+				}
 			}
 
 			if (i == 0) {
@@ -664,7 +672,7 @@ QStringList ImageBrowserModel::readImageData(QStringList images) {
 }
 
 void ImageBrowserModel::writeImageData(QStringList images, QString exifKey, QString text)  {
-	qDebug() << "Write the following Text to the selected images: " << text;
+
 	// Schleife über alle selektierten Bilder
 	for (int i = 0; i < images.size(); i++) {
 		try {
@@ -688,6 +696,10 @@ void ImageBrowserModel::writeImageData(QStringList images, QString exifKey, QStr
 					Exiv2::XmpData xmpData = image->xmpData();
 					xmpData[exifKey.toLatin1().data()] = text.toLatin1().data();
 					image->setXmpData(xmpData);
+				} else if (exifKey.startsWith("Iptc")) {
+					Exiv2::IptcData iptcData = image->iptcData();
+					iptcData[exifKey.toLatin1().data()] = text.toLatin1().data();
+					image->setIptcData(iptcData);
 				}
 				image->writeMetadata();
 
@@ -708,6 +720,11 @@ void ImageBrowserModel::writeImageData(QStringList images, QString exifKey, QStr
 						Exiv2::XmpProperties::registerNs("http://ns.adobe.com/tiff/1.0/", "tiff");
 						xmpData[exifKey.toLatin1().data()] = text.toLatin1().data();
 						xmpImage->setXmpData(xmpData);
+					}  else if (exifKey.startsWith("Iptc")) {
+						Exiv2::IptcData iptcData = xmpImage->iptcData();
+						Exiv2::XmpProperties::registerNs("http://ns.adobe.com/tiff/1.0/", "tiff");
+						iptcData[exifKey.toLatin1().data()] = text.toLatin1().data();
+						xmpImage->setIptcData(iptcData);
 					}
 					xmpImage->writeMetadata();
 				} else {
@@ -722,6 +739,11 @@ void ImageBrowserModel::writeImageData(QStringList images, QString exifKey, QStr
 						Exiv2::XmpProperties::registerNs("http://ns.adobe.com/tiff/1.0/", "tiff");
 						xmpData[exifKey.toLatin1().data()] = text.toLatin1().data();
 						xmpImage->setXmpData(xmpData);
+					}  else if (exifKey.startsWith("Iptc")) {
+						Exiv2::IptcData iptcData;
+						Exiv2::XmpProperties::registerNs("http://ns.adobe.com/tiff/1.0/", "tiff");
+						iptcData[exifKey.toLatin1().data()] = text.toLatin1().data();
+						xmpImage->setIptcData(iptcData);
 					}
 					xmpImage->writeMetadata();
 	
