@@ -665,4 +665,71 @@ QStringList ImageBrowserModel::readImageData(QStringList images) {
 
 void ImageBrowserModel::writeImageData(QStringList images, QString exifKey, QString text)  {
 	qDebug() << "Write the following Text to the selected images: " << text;
+	// Schleife über alle selektierten Bilder
+	for (int i = 0; i < images.size(); i++) {
+		try {
+			QString absoluteFilename = images.at(i);
+
+
+			// XMP's are only created for RAW-files, other files do have their information embedded in the image!
+			if (absoluteFilename.endsWith(".jpg", Qt::CaseInsensitive)
+				|| absoluteFilename.endsWith(".tiff", Qt::CaseInsensitive)
+				|| absoluteFilename.endsWith(".png", Qt::CaseInsensitive)
+				|| absoluteFilename.endsWith(".tif", Qt::CaseInsensitive)
+				|| absoluteFilename.endsWith(".jpeg", Qt::CaseInsensitive)) {
+	
+				Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(absoluteFilename.toLatin1().data());
+				image->readMetadata();
+				if (exifKey.startsWith("Exif")) {
+					Exiv2::ExifData exifData = image->exifData();
+					exifData[exifKey.toLatin1().data()] = text.toLatin1().data();
+					image->setExifData(exifData);
+				} else if (exifKey.startsWith("Xmp")) {
+					Exiv2::XmpData xmpData = image->xmpData();
+					xmpData[exifKey.toLatin1().data()] = text.toLatin1().data();
+					image->setXmpData(xmpData);
+				}
+				image->writeMetadata();
+
+			} else {
+	
+				QString xmpFile = absoluteFilename.replace(absoluteFilename.size() -3, 3, "xmp");
+				if (currentDirectory.exists(xmpFile)) {
+	
+					Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toLatin1().data());
+					xmpImage->readMetadata();
+					if (exifKey.startsWith("Exif")) {
+						Exiv2::ExifData exifData = xmpImage->exifData();
+						Exiv2::XmpProperties::registerNs("http://ns.adobe.com/tiff/1.0/", "tiff");
+						exifData[exifKey.toLatin1().data()] = text.toLatin1().data();
+						xmpImage->setExifData(exifData);
+					}  else if (exifKey.startsWith("Xmp")) {
+						Exiv2::XmpData xmpData = xmpImage->xmpData();
+						Exiv2::XmpProperties::registerNs("http://ns.adobe.com/tiff/1.0/", "tiff");
+						xmpData[exifKey.toLatin1().data()] = text.toLatin1().data();
+						xmpImage->setXmpData(xmpData);
+					}
+					xmpImage->writeMetadata();
+				} else {
+					Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, xmpFile.toLatin1().data());
+					if (exifKey.startsWith("Exif")) {
+						Exiv2::ExifData exifData;
+						Exiv2::XmpProperties::registerNs("http://ns.adobe.com/tiff/1.0/", "tiff");
+						exifData[exifKey.toLatin1().data()] = text.toLatin1().data();
+						xmpImage->setExifData(exifData);
+					}  else if (exifKey.startsWith("Xmp")) {
+						Exiv2::XmpData xmpData;
+						Exiv2::XmpProperties::registerNs("http://ns.adobe.com/tiff/1.0/", "tiff");
+						xmpData[exifKey.toLatin1().data()] = text.toLatin1().data();
+						xmpImage->setXmpData(xmpData);
+					}
+					xmpImage->writeMetadata();
+	
+				}
+			}
+	
+		} catch (Exiv2::AnyError& e) {
+			std::cout << "Caught Exiv2 exception '" << e << "'\n";
+		}
+	}
 }
