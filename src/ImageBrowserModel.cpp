@@ -761,10 +761,13 @@ void ImageBrowserModel::writeImageData(QStringList images, QString exifKey, QStr
 					Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::open(xmpFile.toLatin1().data());
 					xmpImage->readMetadata();
 					if (exifKey.startsWith("Exif")) {
+qDebug() << "Xmp-File update";
 						Exiv2::ExifData exifData = xmpImage->exifData();
 						Exiv2::XmpProperties::registerNs("http://ns.adobe.com/tiff/1.0/", "tiff");
 						exifData[exifKey.toLatin1().data()] = text.toLatin1().data();
 						xmpImage->setExifData(exifData);
+qDebug() << QString::fromStdString(exifData[exifKey.toLatin1().data()].print());
+qDebug() << "Xmp File update ende";
 					}  else if (exifKey.startsWith("Xmp")) {
 						Exiv2::XmpData xmpData = xmpImage->xmpData();
 						Exiv2::XmpProperties::registerNs("http://ns.adobe.com/tiff/1.0/", "tiff");
@@ -777,6 +780,9 @@ void ImageBrowserModel::writeImageData(QStringList images, QString exifKey, QStr
 						xmpImage->setIptcData(iptcData);
 					}
 					xmpImage->writeMetadata();
+Exiv2::ExifData exifData = xmpImage->exifData();
+qDebug() << QString::fromStdString(exifData[exifKey.toLatin1().data()].print());
+qDebug() << "Xmp write meta";
 				} else {
 					Exiv2::Image::AutoPtr xmpImage = Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, xmpFile.toLatin1().data());
 					if (exifKey.startsWith("Exif")) {
