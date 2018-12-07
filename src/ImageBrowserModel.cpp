@@ -634,6 +634,35 @@ QStringList ImageBrowserModel::readImageData(QStringList images) {
 		Exiv2::ExifData exifData = image->exifData();
 		Exiv2::IptcData iptcData = image->iptcData();
 
+		// empty Xmp-File data
+		Exiv2::Image::AutoPtr xmpImage;
+		Exiv2::XmpData xmpXmpData;
+		Exiv2::ExifData xmpExifData;
+		Exiv2::IptcData xmpIptcData;
+		bool xmpExists = false;
+
+		// XMP's are only created for RAW-files, other files do have their information embedded in the image!
+		if (!images.at(i).endsWith(".jpg", Qt::CaseInsensitive)
+			&& !images.at(i).endsWith(".tiff", Qt::CaseInsensitive)
+			&& !images.at(i).endsWith(".png", Qt::CaseInsensitive)
+			&& !images.at(i).endsWith(".tif", Qt::CaseInsensitive)
+			&& !images.at(i).endsWith(".jpeg", Qt::CaseInsensitive)) {
+			
+			QString xmpFilename = images.at(i);
+			QString xmpFile = xmpFilename.replace(images.at(i).size() -3, 3, "xmp");
+			if (currentDirectory.exists(xmpFile)) {
+				//try {
+					xmpImage = Exiv2::ImageFactory::open(xmpFile.toLatin1().data());
+					xmpImage->readMetadata();
+					xmpXmpData = xmpImage->xmpData();
+					xmpExifData = xmpImage->exifData();
+					xmpIptcData = xmpImage->iptcData();
+					xmpExists = true;
+				//} catch (Exiv2::AnyError& e) {
+				//}
+			}
+		}
+
 		for (int j = 0; j < exifKeys.size(); j++) {
 			QString key = exifKeys.at(j);
 			QString value;
@@ -644,6 +673,13 @@ QStringList ImageBrowserModel::readImageData(QStringList images) {
 				} catch (Exiv2::AnyError& e) {
 					value = "-";
 				}
+				if (xmpExists) {
+					try {
+						Exiv2::Exifdatum tmpValue = xmpExifData[key.toLatin1().data()];
+						value = QString::fromStdString(tmpValue.print());
+					} catch (Exiv2::AnyError& e) {
+					}
+				}
 			} else if (key.startsWith("Xmp")) {
 				try {
 					Exiv2::Xmpdatum tmpValue = xmpData[key.toLatin1().data()];
@@ -651,12 +687,26 @@ QStringList ImageBrowserModel::readImageData(QStringList images) {
 				} catch (Exiv2::AnyError& e) {
 					value = "-";
 				}
+				if (xmpExists) {
+					try {
+						Exiv2::Xmpdatum tmpValue = xmpXmpData[key.toLatin1().data()];
+						value = QString::fromStdString(tmpValue.print());
+					} catch (Exiv2::AnyError& e) {
+					}
+				}
 			} else if (key.startsWith("Iptc")) {
 				try {
 					Exiv2::Iptcdatum tmpValue = iptcData[key.toLatin1().data()];
 					value = QString::fromStdString(tmpValue.print());
 				} catch (Exiv2::AnyError& e) {
 					value = "-";
+				}
+				if (xmpExists) {
+					try {
+						Exiv2::Iptcdatum tmpValue = xmpIptcData[key.toLatin1().data()];
+						value = QString::fromStdString(tmpValue.print());
+					} catch (Exiv2::AnyError& e) {
+					}
 				}
 			}
 
