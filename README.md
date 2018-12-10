@@ -3,8 +3,8 @@
 a simple and easy to use picture/photo management application, currently for my own requirements, to work closely with picturecodes Photo Ninja.
 
 To compile the sourcecode, you currently need the following software-packages:  
-* QT 4.8.3  
-* exiv2 0.23  
+* QT 5.11
+* exiv2 0.27-RC4  
 
 The sourcecode is currently developed under linux, but hopefully, on a later stable day, there will be a windows and mac-version, too.
 
@@ -27,6 +27,7 @@ Label=Yellow;Yellow
 Label=Blue;Blue  
 Label=Green;Green  
 Label=Purple;Purple  
+ExifKeys=Exif.Image.ImageDescription;Exif.Image.ImageWidth;Exif.Image.ImageLength;Exif.Image.Make;Exif.Image.Model;Exif.Image.DateTime;Exif.Image.Artist;Exif.Image.Copyright;Exif.Image.Software;Exif.Photo.ExposureTime;Exif.Photo.FNumber;Exif.Photo.ExposureProgram;Exif.Photo.ISOSpeedRatings;Exif.Photo.DateTimeOriginal;Exif.Photo.ExposureBiasValue;Exif.Photo.MaxApertureValue;Exif.Photo.MeteringMode;Exif.Photo.LightSource;Exif.Photo.Flash;Exif.Photo.FocalLength;Exif.Photo.UserComment;Exif.Photo.ColorSpace;Exif.Photo.FileSource;Exif.Photo.ExposureMode;Exif.Photo.WhiteBalance;Exif.Photo.DigitalZoomRatio;Exif.Photo.Contrast;Exif.Photo.Saturation;Exif.Photo.Sharpness;Exif.Photo.LensSpecification;Exif.Photo.LensModel;Xmp.dc.creator;Xmp.dc.subject;Xmp.lr.hierarchicalSubject  
 
 ## Unix
 The configuration file should have the name Interlace.cfg and resides in the $HOME directory of the user
@@ -41,3 +42,4 @@ Label=Yellow;Yellow
 Label=Blue;Blue  
 Label=Green;Green  
 Label=Purple;Purple  
+ExifKeys=Exif.Image.ImageDescription;Exif.Image.ImageWidth;Exif.Image.ImageLength;Exif.Image.Make;Exif.Image.Model;Exif.Image.DateTime;Exif.Image.Artist;Exif.Image.Copyright;Exif.Image.Software;Exif.Photo.ExposureTime;Exif.Photo.FNumber;Exif.Photo.ExposureProgram;Exif.Photo.ISOSpeedRatings;Exif.Photo.DateTimeOriginal;Exif.Photo.ExposureBiasValue;Exif.Photo.MaxApertureValue;Exif.Photo.MeteringMode;Exif.Photo.LightSource;Exif.Photo.Flash;Exif.Photo.FocalLength;Exif.Photo.UserComment;Exif.Photo.ColorSpace;Exif.Photo.FileSource;Exif.Photo.ExposureMode;Exif.Photo.WhiteBalance;Exif.Photo.DigitalZoomRatio;Exif.Photo.Contrast;Exif.Photo.Saturation;Exif.Photo.Sharpness;Exif.Photo.LensSpecification;Exif.Photo.LensModel;Xmp.dc.creator;Xmp.dc.subject;Xmp.lr.hierarchicalSubject  
